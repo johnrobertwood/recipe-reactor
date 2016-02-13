@@ -27,3 +27,21 @@ input{
   margin: 10px;
   padding: 6px;
 }
+
+td input {
+  display: none;
+}
+
+tr.editMode input {
+  display: block;
+  width: 20px;
+  margin: 0;
+}
+
+tr.editMode td.food input {
+  width: 80px;
+}
+
+tr.editMode p {
+  display: none;
+}
