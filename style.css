@@ -34,14 +34,10 @@ td input {
 
 tr.editMode input {
   display: block;
-  width: 20px;
+  width: 60px;
   margin: 0;
 }
 
-tr.editMode td.food input {
-  width: 80px;
-}
-
-tr.editMode p {
+tr.editMode p.food, tr.editMode p.quantity {
   display: none;
 }

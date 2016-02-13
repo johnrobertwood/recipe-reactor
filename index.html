@@ -4,65 +4,65 @@
   <meta charset="UTF-8">
   <title>Nutrition Info</title>
   <link rel="stylesheet" href="style.css" >
-  <script src="app.js"></script>
+  
 </head>
 <body>
   <div class="container">
   	<div class="row">
-	    <input id="new-food" type="text" placeholder="Add food here">
-	 		<input id="new-qty" type="text" placeholder="Quantity in cups">
-	 		<button>Add</button> 
-	 	</div>
+	    <input id="new-food" type="text" placeholder="Add food here" value="banana">
+	 	<input id="new-qty" type="text" placeholder="Quantity in cups" value="1">
+	 	<button>Add</button> 
+	 </div>
 
-	 	<div class="row">
-			<table>
-				<thead>
-					<tr>
-						<th>Food</th>
-						<th>Cups</th>
-						<th>Calories</th>
-						<th>Protein</th>
-						<th>Fiber</th>
-						<th>Sugar</th>
-						<th colspan="2">Modify</th>
-					</tr>
-				</thead>
-				<tfoot>
-					<tr>
-						<th>Total</th>
-						<th>2</th>
-						<th>140</th>
-						<th>15</th>
-						<th>22</th>
-						<th>13</th>
-						<th colspan="2"></th>
-					</tr>
-				</tfoot>
-				<tbody id="food-table">
-					<tr>
-						<td class="food"><p>Bread</p><input type="text"></td>
-						<td class="quantity"><p>1</p><input type="text"></td>
-						<td class="calories"><p>60</p><input type="text"></td>
-						<td class="protein"><p>9</p><input type="text"></td>
-						<td class="fiber"><p>10</p><input type="text"></td>
-						<td class="sugar"><p>6</p><input type="text"></td>
-						<td><button class="edit">Edit</button></td>
-						<td><button class="delete">Delete</button></td>
-					</tr>					
-					<tr class="editMode">
-						<td class="food"><p>Avocado</p><input type="text"></td>
-						<td class="quantity"><p>1</p><input type="text"></td>
-						<td class="calories"><p>80</p><input type="text"></td>
-						<td class="protein"><p>6</p><input type="text"></td>
-						<td class="fiber"><p>12</p><input type="text"></td>
-						<td class="sugar"><p>7</p><input type="text"></td>
-						<td><button class="edit">Edit</button></td>
-						<td><button class="delete">Delete</button></td>
-					</tr>
-				</tbody>
-			</table>
-	 	</div>
+ 	<div class="row">
+		<table>
+			<thead>
+				<tr>
+					<th>Food</th>
+					<th>Cups</th>
+					<th>Calories</th>
+					<th>Protein</th>
+					<th>Fiber</th>
+					<th>Sugar</th>
+					<th colspan="2">Modify</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<th>Total</th>
+					<th>2</th>
+					<th>140</th>
+					<th>15</th>
+					<th>22</th>
+					<th>13</th>
+					<th colspan="2"></th>
+				</tr>
+			</tfoot>
+			<tbody id="food-table">
+				<tr>
+					<td><p class="food">Bread</p><input type="text"></td>
+					<td><p class="quantity">1</p><input type="text"></td>
+					<td><p class="calories">60</p></td>
+					<td><p class="protein">9</p></td>
+					<td><p class="fiber">10</p></td>
+					<td><p class="sugar">6</p></td>
+					<td><button class="edit">Edit</button></td>
+					<td><button class="delete">Delete</button></td>
+				</tr>					
+				<tr class="editMode">
+					<td><p class="food">Avocado</p><input type="text"></td>
+					<td><p class="quantity">1</p><input type="text"></td>
+					<td><p class="calories">80</p></td>
+					<td><p class="protein">6</p></td>
+					<td><p class="fiber">12</p></td>
+					<td><p class="sugar">7</p></td>
+					<td><button class="edit">Edit</button></td>
+					<td><button class="delete">Delete</button></td>
+				</tr>
+			</tbody>
+		</table>
+ 	</div>
   </div>
-	
+  <script src="app.js"></script>
 </body>
 </html>
