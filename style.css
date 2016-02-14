@@ -20,12 +20,23 @@ th, td {
 	text-align: left;
 	padding: 10px;
 	border-bottom: 1px solid #ddd;
+  width: 70px;
 }
 
-input{
+th:first-child {
+  width: 200px;
+}
+
+th:nth-child(2) {
+  padding: 9px;
+  width: 200px;
+}
+
+input {
   width : 150px;
   margin: 10px;
   padding: 6px;
+  font-size: 15px;
 }
 
 td input {
@@ -34,7 +45,7 @@ td input {
 
 tr.editMode input {
   display: block;
-  width: 60px;
+  width: 40px;
   margin: 0;
 }
 

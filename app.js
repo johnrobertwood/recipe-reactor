@@ -6,14 +6,14 @@ var addButton = document.getElementsByTagName("button")[0];
 //Assign the parent elemnt in the table to variable
 var foodTable = document.getElementById("food-table");
 
-function addFood(){
+var addFood = function(){
 	var recipeItem = createRow("banana", 1);
 	foodTable.appendChild(recipeItem);
 }
 
 
 //Create an add row function that builds up a table row by appending data cells with each column value
-function createRow(food, quantity) {
+var createRow = function (food, quantity) {
   var recipeItem = document.createElement("tr");
   var foodData = document.createElement("td");
   var foodText = document.createElement("p");
@@ -34,13 +34,13 @@ function createRow(food, quantity) {
   var deleteData = document.createElement("td");
   var deleteButton = document.createElement("button");
 
-  foodData.innerHTML = food;
+  foodData.innerText = food;
   foodInput.type = "text";
-  quantityData.innerHTML = quantity;
+  quantityData.innerText = quantity;
   quantityInput.type = "text";
-  editButton.innerHTML = "Edit";
+  editButton.innerText = "Edit";
   editButton.className = "edit";
-  deleteButton.innerHTML = "Delete";
+  deleteButton.innerText = "Delete";
   deleteButton.className = "delete";
 
   foodData.appendChild(foodText);
@@ -63,6 +63,8 @@ function createRow(food, quantity) {
   recipeItem.appendChild(editData);
   recipeItem.appendChild(deleteData);
 
+  bindRecipeEvents(recipeItem);
+
   return recipeItem;
 
 }
@@ -71,17 +73,55 @@ addButton.addEventListener("click", addFood);
 
 
 //Create an edit function that selects the parent node of the button
+var editRecipe = function() {
+  var editCell = this.parentNode;
+  var recipeItem = editCell.parentNode;
+  var editInput = recipeItem.querySelectorAll("input[type=text]")[0];
+  var editQuantity = recipeItem.querySelectorAll("input[type=text]")[1];
+  var text = recipeItem.querySelectorAll("p")[0];
+  var quantity = recipeItem.querySelectorAll("p")[1];
+
+  var containsClass = recipeItem.classList.contains("editMode");
+  console.log(containsClass);
+  var editButton = recipeItem.querySelector("button.edit");
+
+  if (containsClass) {
+    text.innerText = editInput.value;
+    quantity.innerText = editQuantity.value;
+    editButton.innerText = "Edit";
+  } else {
+    editInput.value = text.innerText;
+    editQuantity.value = quantity.innerText;
+    editButton.innerText = "Save";
+  }
+
+  recipeItem.classList.toggle('editMode');
+}
 //then swaps the p value with the input value if you click edit
 //Clicking edit again to switch out of editmode swaps edit input value with p value
 
 //Create delete function that selects the parent row node of the button to a variable, then 
 //moves up to the next parent and removes that variable which is now the child
-
+var deleteRecipe = function() {
+  var buttonCell = this.parentNode;
+  var buttonRow = buttonCell.parentNode;
+  var tbody = buttonRow.parentNode;
+  tbody.removeChild(buttonRow);
+}
 //Create an add function that sums the colums and displays them on the bottom row
 
 //Create a bind function that assigns click event handlers to the edit and delete functions
 //use a for loop to go through each table row calling the bind function
+var bindRecipeEvents = function(recipeItem) {
+  var editButton = recipeItem.querySelector("button.edit");
+  var deleteButton = recipeItem.querySelector("button.delete");
+  editButton.addEventListener("click", editRecipe);
+  deleteButton.addEventListener("click", deleteRecipe);
+}
 
+for (var i = 0; i < foodTable.children.length; i++) {
+  bindRecipeEvents(foodTable.children[i]);
+}
 
 
 
