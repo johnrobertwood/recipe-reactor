@@ -1,0 +1,27 @@
+{
+  "name": "nutridata",
+  "version": "1.0.0",
+  "description": "An app that calculates the nutrition data of ingredients in a recipe",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnrobertwood/nutrition.git"
+  },
+  "keywords": [
+    "nutrition",
+    "nutritionix"
+  ],
+  "author": "John Wood <johnrobertwood@yahoo.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johnrobertwood/nutrition/issues"
+  },
+  "homepage": "https://github.com/johnrobertwood/nutrition#readme",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}

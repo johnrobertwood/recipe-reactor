@@ -9,8 +9,8 @@
 <body>
   <div class="container">
   	<div class="row">
-	    <input id="new-food" type="text" placeholder="Add food here" value="banana">
-	 	<input id="new-qty" type="text" placeholder="Quantity in cups" value="1">
+	    <input id="new-food" type="text" placeholder="Add food here" value="">
+	 	<input id="new-qty" type="text" placeholder="Quantity in cups" value="">
 	 	<button>Add</button> 
 	 </div>
 
@@ -22,30 +22,33 @@
 					<th>Cups</th>
 					<th>Calories</th>
 					<th>Protein</th>
-					<th>Fiber</th>
+					<th>Fat</th>
 					<th>Sugar</th>
+					<th>Fiber</th>
 					<th colspan="2">Modify</th>
 				</tr>
 			</thead>
 			<tfoot>
 				<tr>
 					<th>Total</th>
-					<th>2</th>
-					<th>140</th>
-					<th>15</th>
-					<th>22</th>
-					<th>13</th>
+					<th id="tQty"></th>
+					<th id="tCals"></th>
+					<th id="tPro"></th>
+					<th id="tFat"></th>
+					<th id="tSug"></th>
+					<th id="tFib"></th>
 					<th colspan="2"></th>
 				</tr>
 			</tfoot>
 			<tbody id="food-table">
-				<tr>
+<!-- 				<tr>
 					<td><p class="food">Bread</p><input type="text"></td>
 					<td><p class="quantity">1</p><input type="text"></td>
 					<td><p class="calories">60</p></td>
 					<td><p class="protein">9</p></td>
-					<td><p class="fiber">10</p></td>
+					<td><p class="fat">2</p></td>
 					<td><p class="sugar">6</p></td>
+					<td><p class="fiber">10</p></td>
 					<td><button class="edit">Edit</button></td>
 					<td><button class="delete">Delete</button></td>
 				</tr>					
@@ -54,11 +57,12 @@
 					<td><p class="quantity">1</p><input type="text"></td>
 					<td><p class="calories">80</p></td>
 					<td><p class="protein">6</p></td>
-					<td><p class="fiber">12</p></td>
+					<td><p class="fat">2</p></td>
 					<td><p class="sugar">7</p></td>
+					<td><p class="fiber">12</p></td>
 					<td><button class="edit">Edit</button></td>
 					<td><button class="delete">Delete</button></td>
-				</tr>
+				</tr> -->
 			</tbody>
 		</table>
  	</div>
