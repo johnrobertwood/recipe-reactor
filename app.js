@@ -3,6 +3,8 @@ var foodInput = document.getElementById("new-food");
 var quantityInput = document.getElementById("new-quantity");
 //Assign the button to a variable
 var addButton = document.getElementsByTagName("button")[0];
+//Special function button
+var specialButton = document.getElementsByTagName("button")[1];
 //Assign the parent elemnt in the table to variable
 var foodTable = document.getElementById("food-table");
 
@@ -11,7 +13,6 @@ function addFood(){
   xhr.onreadystatechange = function () {
     if(xhr.readyState === 4) {
       createRow(xhr);
-console.log(xhr);
     }
   };
   xhr.open('GET', 'https://api.nutritionix.com/v1_1/search/'+foodInput.value+
@@ -20,6 +21,28 @@ console.log(xhr);
     '&appId=a5f3fad2&appKey=852bc683dfc97b299e0b1e1d6f9be7f5');
   xhr.send();
 }
+
+var foodArray = function() {
+  //The data array will have the p elements from the row 
+  var data = []; 
+  //foodObj will have the macro nutrient names and numerical values 
+  var foodObj = {};
+  //foodArr is an array to store the food objects
+  var foodArr = [];
+  var table = document.getElementById("food-table"); 
+  var rows = table.getElementsByTagName("tr");
+    for (var i = 0; i < rows.length; i++) {
+      data = rows[i].getElementsByTagName("p");
+      for (var j = 0; j < data.length; j++) {
+        var key = data[j].className;
+        var value = data[j].innerText;
+        foodObj[key] = value;
+      }
+    foodArr.push(foodObj);
+  }
+  console.log(foodArr);
+}
+
 
 //Create an add row function that builds up a table row by appending data cells 
 //with each column value
@@ -47,7 +70,7 @@ var createRow = function (xhr) {
   var deleteData = document.createElement("td");
   var deleteButton = document.createElement("button");
 
-  foodText.innerText = data.hits[0].fields.item_name.split(' ')[0];
+  foodText.innerText = data.hits[0].fields.item_name.split(' ')[0].slice(0, -1);
   foodText.className = "food";
   foodInput.type = "text";
   quantityText.innerText = Math.round(data.hits[0].fields.nf_serving_size_qty);
@@ -63,6 +86,7 @@ var createRow = function (xhr) {
   sugarText.className = "sugar";
   fiberText.innerText = Math.round(data.hits[0].fields.nf_dietary_fiber);
   fiberText.className = "fiber";
+
   editButton.innerText = "Edit";
   editButton.className = "edit";
   deleteButton.innerText = "Delete";
@@ -93,6 +117,7 @@ var createRow = function (xhr) {
   bindRecipeEvents(recipeItem);
   foodInput.value = "";
   addQuantity();
+  foodArray();
 }
 
 addButton.addEventListener("click", addFood);
@@ -160,7 +185,8 @@ var addQuantity = function() {
   document.getElementById("tFat").innerText = totalFat;
   document.getElementById("tSug").innerText = totalSugar;
   document.getElementById("tFib").innerText = totalFiber;
-  console.log(totalFat)
+  
+
 }
 //Create a bind function that assigns click event handlers to the edit and delete functions
 //use a for loop to go through each table row calling the bind function
@@ -174,6 +200,8 @@ var bindRecipeEvents = function(recipeItem) {
 for (var i = 0; i < foodTable.children.length; i++) {
   bindRecipeEvents(foodTable.children[i]);
 }
+
+// foodArray();
 
 
 
