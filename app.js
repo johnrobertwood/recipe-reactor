@@ -8,9 +8,7 @@ var swagButton = document.getElementsByTagName("button")[1];
 //Assign the parent elemnt in the table to variable
 var foodTable = document.getElementById("food-table");
 
-var foodData = null;
-
-var clickedValue;
+var recipeArr = [];
 
 function addFood(){
   var xhr = new XMLHttpRequest();
@@ -26,33 +24,42 @@ function addFood(){
   xhr.send();
 }
 
-// var foodArray = function() {
-//   var table = document.getElementById("food-table"); 
-//   var rows = table.getElementsByTagName("tr");
-//   var data = [];
-//   return {  
-//     parseArr: function(){
-//       for (var i = 0; i < rows.length; i++) {
-//         data[i] = [].slice.call(rows[i].getElementsByTagName("p"));
-//       }
-//       return data;
-//     }
-//   }
-// }
+function Ingredient(food, quantity, calories, protein, fat, sugar, fiber) {
+  this.food = food;
+  this.quantity = quantity;
+  this.calories = calories;
+  this.protein = protein;
+  this.fat = fat;
+  this.sugar = sugar;
+  this.fiber = fiber;
+}
 
-// var f = foodArray();
+function nameArray() {
+var byName = {};
+recipeArr.forEach(function(foodName) {
+  byName[foodName.food] = foodName;
+});
+console.log(byName);
+}
 
-// swagButton.addEventListener('click', logger);
+var highFiber = function(r) {
+  if(r.fiber > 2)
+    return r;
+}
 
-// function logger(){
-//   return f.parseArr();
-// }
+function logger(r) {
+  console.log(recipeArr.filter(function(r) {
+    return r.fiber > 1;
+  }));
+}
 
-
+swagButton.addEventListener('click', logger);
 //Create an add row function that builds up a table row by appending data cells 
 //with each column value
 var createRow = function (xhr) {
+  var foodObject = {};
   var data = JSON.parse(xhr.responseText);
+
   var recipeItem = document.createElement("tr");
   var foodData = document.createElement("td");
   var foodText = document.createElement("p");
@@ -75,23 +82,47 @@ var createRow = function (xhr) {
   var deleteData = document.createElement("td");
   var deleteButton = document.createElement("button");
 
-  foodText.innerText = data.hits[0].fields.item_name.split(' ')[0].slice(0, -1);
+  var foodName = data.hits[0].fields.item_name.split(' ')[0].slice(0, -1);
+  foodText.innerText = foodName;
   foodText.className = "food";
   foodInput.type = "text";
-  quantityText.innerText = Math.round(data.hits[0].fields.nf_serving_size_qty)*qtyInput.value;
-  // quantityText.innerText = quantityInput.value;
+  // foodObject[foodText.className] = foodText.innerText;
+
+  var numberOfCups = parseInt(qtyInput.value);
+  quantityText.innerText = Math.round(numberOfCups)*qtyInput.value;
   quantityText.className = "quantity";
   quantityInput.type = "text";
-  caloriesText.innerText = Math.round(data.hits[0].fields.nf_calories)*qtyInput.value;
+  // foodObject[quantityText.className] = quantityText.innerText;
+
+  var numberOfCalories = data.hits[0].fields.nf_calories;
+  caloriesText.innerText = Math.round(numberOfCalories)*qtyInput.value;
   caloriesText.className = "calories";
-  proteinText.innerText = Math.round(data.hits[0].fields.nf_protein)*qtyInput.value;
+  // foodObject[caloriesText.className] = caloriesText.innerText;
+
+  var numberOfProtein = data.hits[0].fields.nf_protein;
+  proteinText.innerText = Math.round(numberOfProtein)*qtyInput.value;
   proteinText.className = "protein";
-  fatText.innerText = Math.round(data.hits[0].fields.nf_total_fat)*qtyInput.value;
+  // foodObject[proteinText.className] = proteinText.innerText;
+
+  var numberOfFat = data.hits[0].fields.nf_total_fat;
+  fatText.innerText = Math.round(numberOfFat)*qtyInput.value;
   fatText.className = "fat";
-  sugarText.innerText = Math.round(data.hits[0].fields.nf_sugars)*qtyInput.value;
+  // foodObject[fatText.className] = fatText.innerText;
+
+  var numberOfSugar = data.hits[0].fields.nf_sugars;
+  sugarText.innerText = Math.round(numberOfSugar)*qtyInput.value;
   sugarText.className = "sugar";
-  fiberText.innerText = Math.round(data.hits[0].fields.nf_dietary_fiber)*qtyInput.value;
+  // foodObject[sugarText.className] = sugarText.innerText;
+
+  var numberOfFiber = data.hits[0].fields.nf_dietary_fiber;
+  fiberText.innerText = Math.round(numberOfFiber)*qtyInput.value;
   fiberText.className = "fiber";
+  // foodObject[fiberText.className] = fiberText.innerText;
+
+  var theIngredient = new Ingredient(foodName, numberOfCups, numberOfCalories, numberOfProtein, numberOfFat, numberOfSugar, numberOfFiber );
+
+  recipeArr.push(theIngredient);
+  console.log(recipeArr);
 
   editButton.innerText = "Edit";
   editButton.className = "edit";
