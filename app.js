@@ -10,6 +10,9 @@ var foodTable = document.getElementById("food-table");
 
 var recipeArr = [];
 
+var totalArr = [];
+
+
 function addFood(){
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function () {
@@ -42,18 +45,17 @@ recipeArr.forEach(function(foodName) {
 console.log(byName);
 }
 
-var highFiber = function(r) {
-  if(r.fiber > 2)
-    return r;
-}
 
-function logger(r) {
-  console.log(recipeArr.filter(function(r) {
-    return r.fiber > 1;
-  }));
-}
 
-swagButton.addEventListener('click', logger);
+
+swagButton.addEventListener('click', function() {
+  analyzeRecipe(recipeArr, highFiber);
+  analyzeRecipe(recipeArr, lowFat);
+  analyzeRecipe(recipeArr, highProtein);
+  analyzeRecipe(recipeArr, lowSugar);
+  // analyzeRecipe(totalArr[totalArr, highFiber);
+  // analyzeRecipe(totalArr, lowFat);
+});
 //Create an add row function that builds up a table row by appending data cells 
 //with each column value
 var createRow = function (xhr) {
@@ -122,7 +124,7 @@ var createRow = function (xhr) {
   var theIngredient = new Ingredient(foodName, numberOfCups, numberOfCalories, numberOfProtein, numberOfFat, numberOfSugar, numberOfFiber );
 
   recipeArr.push(theIngredient);
-  console.log(recipeArr);
+  // console.log(recipeArr);
 
   editButton.innerText = "Edit";
   editButton.className = "edit";
@@ -152,7 +154,7 @@ var createRow = function (xhr) {
   recipeItem.appendChild(deleteData);
   foodTable.appendChild(recipeItem);
   bindRecipeEvents(recipeItem);
-  // foodInput.value = "";
+  foodInput.value = "";
   addQuantity();
 }
 
@@ -174,6 +176,8 @@ var editRecipe = function() {
   var containsClass = recipeItem.classList.contains("editMode");
   var editButton = recipeItem.querySelector("button.edit");
 
+//Swaps the p value with the input value if you click edit
+//Clicking edit again to switch out of editmode swaps edit input value with p value
   if (containsClass) {
     text.innerText = editInput.value;
     quantity.innerText = editQuantity.value;
@@ -191,8 +195,6 @@ var editRecipe = function() {
   recipeItem.classList.toggle('editMode');
   addQuantity();
 }
-//then swaps the p value with the input value if you click edit
-//Clicking edit again to switch out of editmode swaps edit input value with p value
 
 //Create delete function that selects the parent row node of the button to a variable, then 
 //moves up to the next parent and removes that variable which is now the child
@@ -204,7 +206,6 @@ var deleteRecipe = function() {
 }
 //Create an add function that sums the colums and displays them on the bottom row
 var addQuantity = function() {
-  // console.log(numCups);
   var totalQuantity = 0;
   var totalCalories = 0;
   var totalProtein = 0;
@@ -225,15 +226,66 @@ var addQuantity = function() {
     totalSugar += parseInt(sugar[i].innerText);
     totalFiber += parseInt(fiber[i].innerText);
   }
+
+  // var theTotal = new Ingredient("recipe", totalQuantity, totalCalories, totalProtein, totalFat, totalSugar, totalFiber);
+  // totalArr.push(theTotal);
+
   document.getElementById("tQty").innerText = totalQuantity;
   document.getElementById("tCals").innerText = totalCalories;
   document.getElementById("tPro").innerText = totalProtein;
   document.getElementById("tFat").innerText = totalFat;
   document.getElementById("tSug").innerText = totalSugar;
   document.getElementById("tFib").innerText = totalFiber;
-  
 
 }
+
+var analyzeRecipe = function(array, callback) {
+    // var fArray = array.filter(callback);
+    var fArray = [];
+    for (var i = 0; i < array.length; i++){
+      fArray.push(callback(array[i]));
+    }
+    for (var j = 0; j < fArray.length; j++){
+      console.log(fArray[j]);
+    }
+}
+
+var highFiber = function(r) {
+  var fiberMacro = Object.keys(r)[6];
+  if (r.fiber > 2){
+    return "The " + r.food + " is high in " + fiberMacro;
+  } else {
+    return "The " + r.food + " is low in " + fiberMacro;
+  }
+}
+
+var lowFat = function(r) {
+  var fatMacro = Object.keys(r)[4];
+  if (r.fat > 2){
+    return "The " + r.food + " is high in " + fatMacro;
+  } else {
+    return "The " + r.food + " is low in " + fatMacro;
+  }
+}
+
+var highProtein = function(r) {
+  var proteinMacro = Object.keys(r)[3];
+  if (r.protein > 5){
+    return "The " + r.food + " is high in " + proteinMacro;
+  } else {
+    return "The " + r.food + " is low in " + proteinMacro;
+  }
+}
+
+var lowSugar = function(r) {
+  var sugarMacro = Object.keys(r)[5];
+  if (r.sugar > 5){
+    return "The " + r.food + " is high in " + sugarMacro;
+  } else {
+    return "The " + r.food + " is low in " + sugarMacro;
+  }
+}
+
 //Create a bind function that assigns click event handlers to the edit and delete functions
 //use a for loop to go through each table row calling the bind function
 var bindRecipeEvents = function(recipeItem) {
