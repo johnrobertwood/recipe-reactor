@@ -37,25 +37,6 @@ function Ingredient(food, quantity, calories, protein, fat, sugar, fiber) {
   this.fiber = fiber;
 }
 
-function nameArray() {
-var byName = {};
-recipeArr.forEach(function(foodName) {
-  byName[foodName.food] = foodName;
-});
-console.log(byName);
-}
-
-
-
-
-swagButton.addEventListener('click', function() {
-  analyzeRecipe(recipeArr, highFiber);
-  analyzeRecipe(recipeArr, lowFat);
-  analyzeRecipe(recipeArr, highProtein);
-  analyzeRecipe(recipeArr, lowSugar);
-  // analyzeRecipe(totalArr[totalArr, highFiber);
-  // analyzeRecipe(totalArr, lowFat);
-});
 //Create an add row function that builds up a table row by appending data cells 
 //with each column value
 var createRow = function (xhr) {
@@ -88,38 +69,31 @@ var createRow = function (xhr) {
   foodText.innerText = foodName;
   foodText.className = "food";
   foodInput.type = "text";
-  // foodObject[foodText.className] = foodText.innerText;
 
   var numberOfCups = parseInt(qtyInput.value);
   quantityText.innerText = Math.round(numberOfCups)*qtyInput.value;
   quantityText.className = "quantity";
   quantityInput.type = "text";
-  // foodObject[quantityText.className] = quantityText.innerText;
 
   var numberOfCalories = data.hits[0].fields.nf_calories;
   caloriesText.innerText = Math.round(numberOfCalories)*qtyInput.value;
   caloriesText.className = "calories";
-  // foodObject[caloriesText.className] = caloriesText.innerText;
 
   var numberOfProtein = data.hits[0].fields.nf_protein;
   proteinText.innerText = Math.round(numberOfProtein)*qtyInput.value;
   proteinText.className = "protein";
-  // foodObject[proteinText.className] = proteinText.innerText;
 
   var numberOfFat = data.hits[0].fields.nf_total_fat;
   fatText.innerText = Math.round(numberOfFat)*qtyInput.value;
   fatText.className = "fat";
-  // foodObject[fatText.className] = fatText.innerText;
 
   var numberOfSugar = data.hits[0].fields.nf_sugars;
   sugarText.innerText = Math.round(numberOfSugar)*qtyInput.value;
   sugarText.className = "sugar";
-  // foodObject[sugarText.className] = sugarText.innerText;
 
   var numberOfFiber = data.hits[0].fields.nf_dietary_fiber;
   fiberText.innerText = Math.round(numberOfFiber)*qtyInput.value;
   fiberText.className = "fiber";
-  // foodObject[fiberText.className] = fiberText.innerText;
 
   var theIngredient = new Ingredient(foodName, numberOfCups, numberOfCalories, numberOfProtein, numberOfFat, numberOfSugar, numberOfFiber );
 
@@ -206,18 +180,23 @@ var deleteRecipe = function() {
 }
 //Create an add function that sums the colums and displays them on the bottom row
 var addQuantity = function() {
+  var title = "Total"
   var totalQuantity = 0;
   var totalCalories = 0;
   var totalProtein = 0;
   var totalFat = 0;
   var totalSugar = 0;
   var totalFiber = 0;
+  
+  //Create arrays that contain all of the table data column cells
   var quantities = document.getElementsByClassName("quantity");
   var calories = document.getElementsByClassName("calories");
   var protein = document.getElementsByClassName("protein");
   var fat = document.getElementsByClassName("fat");
   var sugar = document.getElementsByClassName("sugar");
   var fiber = document.getElementsByClassName("fiber");
+
+  //Go through each table row and add the nutrient values in each column to their respective totals
   for (var i = 0; i < quantities.length; i++) {
     totalQuantity += parseInt(quantities[i].innerText);
     totalCalories += parseInt(calories[i].innerText);
@@ -227,9 +206,11 @@ var addQuantity = function() {
     totalFiber += parseInt(fiber[i].innerText);
   }
 
-  // var theTotal = new Ingredient("recipe", totalQuantity, totalCalories, totalProtein, totalFat, totalSugar, totalFiber);
-  // totalArr.push(theTotal);
+  //Create a new object with the total values of each nutrient column
+  var theTotal = new Ingredient(title, totalQuantity, totalCalories, totalProtein, totalFat, totalSugar, totalFiber);
+  totalArr = [theTotal];
 
+  //Add the totals to the footer table row
   document.getElementById("tQty").innerText = totalQuantity;
   document.getElementById("tCals").innerText = totalCalories;
   document.getElementById("tPro").innerText = totalProtein;
@@ -239,51 +220,67 @@ var addQuantity = function() {
 
 }
 
-var analyzeRecipe = function(array, callback) {
-    // var fArray = array.filter(callback);
-    var fArray = [];
-    for (var i = 0; i < array.length; i++){
-      fArray.push(callback(array[i]));
-    }
-    for (var j = 0; j < fArray.length; j++){
-      console.log(fArray[j]);
-    }
+swagButton.addEventListener('click', function() {
+
+  var nutriArray = [];
+  nutriArray.push(recipeArr.map(highFiber));
+  nutriArray.push(recipeArr.map(lowFat));
+  nutriArray.push(recipeArr.map(highProtein));
+  nutriArray.push(recipeArr.map(lowSugar));
+
+  display(nutriArray);
+});
+
+var display = function(r) {
+  for (var i = 0; i < r.length; i++){
+    var messageNode = document.createElement("li");
+    messageNode.innerText = r[i];
+    document.getElementById("analysis").appendChild(messageNode);
+  }
 }
 
 var highFiber = function(r) {
-  var fiberMacro = Object.keys(r)[6];
+  var fiberProp = Object.keys(r)[6];
+  var rArr = [];
   if (r.fiber > 2){
-    return "The " + r.food + " is high in " + fiberMacro;
+    rArr.push("The " + r.food + " is high in " + fiberProp);
   } else {
-    return "The " + r.food + " is low in " + fiberMacro;
+    rArr.push("The " + r.food + " is low in " + fiberProp);
   }
+  return rArr;
 }
 
 var lowFat = function(r) {
-  var fatMacro = Object.keys(r)[4];
+  var fatProp = Object.keys(r)[4];
+  var rArr = [];
   if (r.fat > 2){
-    return "The " + r.food + " is high in " + fatMacro;
+    rArr.push("The " + r.food + " is high in " + fatProp);
   } else {
-    return "The " + r.food + " is low in " + fatMacro;
+    rArr.push("The " + r.food + " is low in " + fatProp);
   }
+  return rArr;
 }
 
 var highProtein = function(r) {
-  var proteinMacro = Object.keys(r)[3];
+  var proteinProp = Object.keys(r)[3];
+  var rArr = [];
   if (r.protein > 5){
-    return "The " + r.food + " is high in " + proteinMacro;
+    rArr.push("The " + r.food + " is high in " + proteinProp);
   } else {
-    return "The " + r.food + " is low in " + proteinMacro;
+    rArr.push("The " + r.food + " is low in " + proteinProp);
   }
+  return rArr;
 }
 
 var lowSugar = function(r) {
-  var sugarMacro = Object.keys(r)[5];
+  var sugarProp = Object.keys(r)[5];
+  var rArr = [];
   if (r.sugar > 5){
-    return "The " + r.food + " is high in " + sugarMacro;
+    rArr.push("The " + r.food + " is high in " + sugarProp);
   } else {
-    return "The " + r.food + " is low in " + sugarMacro;
+    rArr.push("The " + r.food + " is low in " + sugarProp);
   }
+  return rArr;
 }
 
 //Create a bind function that assigns click event handlers to the edit and delete functions
