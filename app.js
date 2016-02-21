@@ -8,11 +8,13 @@ var swagButton = document.getElementsByTagName("button")[1];
 //Assign the parent elemnt in the table to variable
 var foodTable = document.getElementById("food-table");
 
+//An array that contains food objects that contain nutritional info
 var recipeArr = [];
 
+//An array to store the sum of the values in each column
 var totalArr = [];
 
-
+//Get nutrion data from the Nutronix API
 function addFood(){
   var xhr = new XMLHttpRequest();
   xhr.onreadystatechange = function () {
@@ -27,9 +29,9 @@ function addFood(){
   xhr.send();
 }
 
-function Ingredient(food, quantity, calories, protein, fat, sugar, fiber) {
+function Ingredient(food, cups, calories, protein, fat, sugar, fiber) {
   this.food = food;
-  this.quantity = quantity;
+  this.cups = cups;
   this.calories = calories;
   this.protein = protein;
   this.fat = fat;
@@ -44,90 +46,93 @@ var createRow = function (xhr) {
   var data = JSON.parse(xhr.responseText);
 
   var recipeItem = document.createElement("tr");
-  var foodData = document.createElement("td");
+
+  var foodName = data.hits[0].fields.item_name.split(' ')[0];
+  var foodDataCell = document.createElement("td");
   var foodText = document.createElement("p");
   var foodInput = document.createElement("input");
-  var quantityData = document.createElement("td");
-  var quantityText = document.createElement("p");
-  var quantityInput = document.createElement("input");
-  var caloriesData = document.createElement("td");
-  var caloriesText = document.createElement("p");
-  var proteinData = document.createElement("td");
-  var proteinText = document.createElement("p");
-  var fatData = document.createElement("td");
-  var fatText = document.createElement("p");
-  var sugarData = document.createElement("td");
-  var sugarText = document.createElement("p");
-  var fiberData = document.createElement("td");
-  var fiberText = document.createElement("p");
-  var editData = document.createElement("td");
-  var editButton = document.createElement("button");
-  var deleteData = document.createElement("td");
-  var deleteButton = document.createElement("button");
-
-  var foodName = data.hits[0].fields.item_name.split(' ')[0].slice(0, -1);
-  foodText.innerText = foodName;
   foodText.className = "food";
+  foodText.innerText = foodName;
   foodInput.type = "text";
-
+  foodDataCell.appendChild(foodText);
+  foodDataCell.appendChild(foodInput);
+  recipeItem.appendChild(foodDataCell);
+  
   var numberOfCups = parseInt(qtyInput.value);
-  quantityText.innerText = Math.round(numberOfCups)*qtyInput.value;
-  quantityText.className = "quantity";
-  quantityInput.type = "text";
+  var cupsDataCell = document.createElement("td");
+  var cupsText = document.createElement("p");
+  var cupsInput = document.createElement("input");
+  cupsText.className = "quantity";
+  cupsText.innerText = Math.round(numberOfCups)*qtyInput.value;
+  cupsInput.type = "text";
+  cupsDataCell.appendChild(cupsText);
+  cupsDataCell.appendChild(cupsInput);
+  recipeItem.appendChild(cupsDataCell);
 
   var numberOfCalories = data.hits[0].fields.nf_calories;
-  caloriesText.innerText = Math.round(numberOfCalories)*qtyInput.value;
+  var caloriesDataCell = document.createElement("td");
+  var caloriesText = document.createElement("p");
   caloriesText.className = "calories";
+  caloriesText.innerText = Math.round(numberOfCalories)*qtyInput.value;
+  caloriesDataCell.appendChild(caloriesText);
+  recipeItem.appendChild(caloriesDataCell);
 
   var numberOfProtein = data.hits[0].fields.nf_protein;
-  proteinText.innerText = Math.round(numberOfProtein)*qtyInput.value;
+  var proteinDataCell = document.createElement("td");
+  var proteinText = document.createElement("p");
   proteinText.className = "protein";
+  proteinText.innerText = Math.round(numberOfProtein)*qtyInput.value;
+  proteinDataCell.appendChild(proteinText);
+  recipeItem.appendChild(proteinDataCell);
 
   var numberOfFat = data.hits[0].fields.nf_total_fat;
-  fatText.innerText = Math.round(numberOfFat)*qtyInput.value;
+  var fatDataCell = document.createElement("td");
+  var fatText = document.createElement("p");
   fatText.className = "fat";
+  fatText.innerText = Math.round(numberOfFat)*qtyInput.value;
+  fatDataCell.appendChild(fatText);
+  recipeItem.appendChild(fatDataCell);
 
   var numberOfSugar = data.hits[0].fields.nf_sugars;
-  sugarText.innerText = Math.round(numberOfSugar)*qtyInput.value;
+  var sugarDataCell= document.createElement("td");
+  var sugarText = document.createElement("p");
   sugarText.className = "sugar";
+  sugarText.innerText = Math.round(numberOfSugar)*qtyInput.value;
+  sugarDataCell.appendChild(sugarText);
+  recipeItem.appendChild(sugarDataCell);
 
   var numberOfFiber = data.hits[0].fields.nf_dietary_fiber;
-  fiberText.innerText = Math.round(numberOfFiber)*qtyInput.value;
+  var fiberDataCell = document.createElement("td");
+  var fiberText = document.createElement("p");
   fiberText.className = "fiber";
+  fiberText.innerText = Math.round(numberOfFiber)*qtyInput.value;
+  fiberDataCell.appendChild(fiberText);
+  recipeItem.appendChild(fiberDataCell);
 
-  var theIngredient = new Ingredient(foodName, numberOfCups, numberOfCalories, numberOfProtein, numberOfFat, numberOfSugar, numberOfFiber );
+  var editDataCell = document.createElement("td");
+  var editButton = document.createElement("button");
+  editButton.className = "edit";
+  editButton.innerText = "Edit";
+  editDataCell.appendChild(editButton);
+  recipeItem.appendChild(editDataCell);
+
+  var deleteDataCell = document.createElement("td");
+  var deleteButton = document.createElement("button");
+  deleteButton.className = "delete";
+  deleteButton.innerText = "Delete";
+  deleteDataCell.appendChild(deleteButton);
+  recipeItem.appendChild(deleteDataCell);
+
+  foodTable.appendChild(recipeItem);
+  
+  bindRecipeEvents(recipeItem);
+  
+  //Create an object with the nutrient keys and values to push into our array of recipe ingredients
+  var theIngredient = new Ingredient(foodName, numberOfCups, numberOfCalories, 
+    numberOfProtein, numberOfFat, numberOfSugar, numberOfFiber);
 
   recipeArr.push(theIngredient);
-  // console.log(recipeArr);
 
-  editButton.innerText = "Edit";
-  editButton.className = "edit";
-  deleteButton.innerText = "Delete";
-  deleteButton.className = "delete";
-
-  foodData.appendChild(foodText);
-  foodData.appendChild(foodInput);
-  quantityData.appendChild(quantityText);
-  quantityData.appendChild(quantityInput);
-  caloriesData.appendChild(caloriesText);
-  proteinData.appendChild(proteinText);
-  fatData.appendChild(fatText);
-  sugarData.appendChild(sugarText);
-  fiberData.appendChild(fiberText);
-  editData.appendChild(editButton);
-  deleteData.appendChild(deleteButton);
-
-  recipeItem.appendChild(foodData);
-  recipeItem.appendChild(quantityData);
-  recipeItem.appendChild(caloriesData);
-  recipeItem.appendChild(proteinData);
-  recipeItem.appendChild(fatData);
-  recipeItem.appendChild(sugarData);
-  recipeItem.appendChild(fiberData);
-  recipeItem.appendChild(editData);
-  recipeItem.appendChild(deleteData);
-  foodTable.appendChild(recipeItem);
-  bindRecipeEvents(recipeItem);
   foodInput.value = "";
   addQuantity();
 }
@@ -170,14 +175,15 @@ var editRecipe = function() {
   addQuantity();
 }
 
-//Create delete function that selects the parent row node of the button to a variable, then 
-//moves up to the next parent and removes that variable which is now the child
+//Create delete function to select the parent row node of the button, assign to a variable 
+//then move up to the next parent and then removes the child to delete the row
 var deleteRecipe = function() {
   var buttonCell = this.parentNode;
   var buttonRow = buttonCell.parentNode;
   var tbody = buttonRow.parentNode;
   tbody.removeChild(buttonRow);
 }
+
 //Create an add function that sums the colums and displays them on the bottom row
 var addQuantity = function() {
   var title = "Total"
@@ -208,6 +214,7 @@ var addQuantity = function() {
 
   //Create a new object with the total values of each nutrient column
   var theTotal = new Ingredient(title, totalQuantity, totalCalories, totalProtein, totalFat, totalSugar, totalFiber);
+
   totalArr = [theTotal];
 
   //Add the totals to the footer table row
@@ -221,17 +228,13 @@ var addQuantity = function() {
 }
 
 swagButton.addEventListener('click', function() {
-
   var nutriArray = [];
-  nutriArray.push(recipeArr.map(highFiber));
-  nutriArray.push(recipeArr.map(lowFat));
-  nutriArray.push(recipeArr.map(highProtein));
-  nutriArray.push(recipeArr.map(lowSugar));
-
+  nutriArray.push(recipeArr.map(healthAnalysis));
   display(nutriArray);
 });
 
 var display = function(r) {
+
   for (var i = 0; i < r.length; i++){
     var messageNode = document.createElement("li");
     messageNode.innerText = r[i];
@@ -239,48 +242,30 @@ var display = function(r) {
   }
 }
 
-var highFiber = function(r) {
-  var fiberProp = Object.keys(r)[6];
+var healthAnalysis = function(r) {
   var rArr = [];
-  if (r.fiber > 2){
-    rArr.push("The " + r.food + " is high in " + fiberProp);
-  } else {
-    rArr.push("The " + r.food + " is low in " + fiberProp);
+  var macros = macroNutrients(r);
+  for (var i = 0; i < 4; i++) {
+    if (macros[i] === "protein" && r.protein > 5) {
+        rArr.push("The " + r.food + " is high in " + macros[i]);
+    } else if (macros[i] === "fat" && r.fat < 2) {
+      rArr.push("The " + r.food + " is low in " + macros[i]);
+    } else if (macros[i] === "sugar" && r.sugar < 5) {
+      rArr.push("The " + r.food + " is low in " + macros[i]);
+    } else if (macros[i] === "fiber" && r.fiber > 2) {
+      rArr.push("The " + r.food + " is high in " + macros[i]);
+    }
   }
   return rArr;
 }
 
-var lowFat = function(r) {
-  var fatProp = Object.keys(r)[4];
-  var rArr = [];
-  if (r.fat > 2){
-    rArr.push("The " + r.food + " is high in " + fatProp);
-  } else {
-    rArr.push("The " + r.food + " is low in " + fatProp);
+var macroNutrients = function(r) {
+  var macroNames = [];
+  for (var i = 3; i < 7; i++) {
+    var prop = Object.keys(r)[i];
+    macroNames.push(prop);
   }
-  return rArr;
-}
-
-var highProtein = function(r) {
-  var proteinProp = Object.keys(r)[3];
-  var rArr = [];
-  if (r.protein > 5){
-    rArr.push("The " + r.food + " is high in " + proteinProp);
-  } else {
-    rArr.push("The " + r.food + " is low in " + proteinProp);
-  }
-  return rArr;
-}
-
-var lowSugar = function(r) {
-  var sugarProp = Object.keys(r)[5];
-  var rArr = [];
-  if (r.sugar > 5){
-    rArr.push("The " + r.food + " is high in " + sugarProp);
-  } else {
-    rArr.push("The " + r.food + " is low in " + sugarProp);
-  }
-  return rArr;
+  return macroNames;
 }
 
 //Create a bind function that assigns click event handlers to the edit and delete functions
