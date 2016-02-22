@@ -54,6 +54,7 @@ var createRow = function (xhr) {
   foodText.className = "food";
   foodText.innerText = foodName;
   foodInput.type = "text";
+  foodInput.className = "foodInput";
   foodDataCell.appendChild(foodText);
   foodDataCell.appendChild(foodInput);
   recipeItem.appendChild(foodDataCell);
@@ -132,12 +133,15 @@ var createRow = function (xhr) {
     numberOfProtein, numberOfFat, numberOfSugar, numberOfFiber);
 
   recipeArr.push(theIngredient);
-
   foodInput.value = "";
   addQuantity();
 }
 
-addButton.addEventListener("click", addFood);
+addButton.addEventListener("click", function(){
+  if (foodInput.value !== ""){
+    addFood();
+  }
+});
 
 //Create an edit function that selects the parent node of the button
 var editRecipe = function() {
@@ -228,37 +232,61 @@ var addQuantity = function() {
 }
 
 swagButton.addEventListener('click', function() {
-  var nutriArray = [];
-  nutriArray.push(recipeArr.map(healthAnalysis));
+
+  var nutriArray = recipeArr.map(healthAnalysis);
   display(nutriArray);
+  colorChanger(recipeArr);
 });
 
 var display = function(r) {
-
+  // console.log(document.getElementById("analysis"))
+  var messageText;
   for (var i = 0; i < r.length; i++){
-    var messageNode = document.createElement("li");
-    messageNode.innerText = r[i];
-    document.getElementById("analysis").appendChild(messageNode);
+    messageText = document.createElement("li");
+    messageText.innerText = r[i];
+    document.getElementById("analysis").appendChild(messageText);
+    console.log(r);
   }
 }
 
+
 var healthAnalysis = function(r) {
   var rArr = [];
+  var len = recipeArr.length;
   var macros = macroNutrients(r);
-  for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < 4; i++) {
     if (macros[i] === "protein" && r.protein > 5) {
-        rArr.push("The " + r.food + " is high in " + macros[i]);
+      rArr.push("The " + r.food + " is high in " + macros[i]);
+
     } else if (macros[i] === "fat" && r.fat < 2) {
       rArr.push("The " + r.food + " is low in " + macros[i]);
     } else if (macros[i] === "sugar" && r.sugar < 5) {
       rArr.push("The " + r.food + " is low in " + macros[i]);
     } else if (macros[i] === "fiber" && r.fiber > 2) {
       rArr.push("The " + r.food + " is high in " + macros[i]);
+      // recipeItem.querySelector("p.fiber").style.backgroundColor = "green";
     }
   }
   return rArr;
 }
 
+var colorChanger = function(r) {
+  var fiberCell = document.querySelectorAll("p.fiber");
+  var fatCell = document.querySelectorAll("p.fat");
+  for (var i = 0; i < fiberCell.length; i++) {
+    if (fiberCell[i].innerHTML > 2) {
+      fiberCell[i].parentNode.style.backgroundColor = "green";
+    } else
+    {
+      fiberCell[i].parentNode.style.backgroundColor = "red";
+    }
+  }
+  for (var j = 0; j < fatCell.length; j++) {
+    if (fatCell[j].innerHTML < 2) {
+      fatCell[j].parentNode.style.backgroundColor = "green";
+    }
+  }
+}
 var macroNutrients = function(r) {
   var macroNames = [];
   for (var i = 3; i < 7; i++) {

@@ -16,39 +16,64 @@ button {
   cursor: pointer;
 }
 
-th, td {
-	text-align: left;
+th {
+  text-align: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+td {
+	text-align: center;
 	padding: 10px;
 	border-bottom: 1px solid #ddd;
-  width: 70px;
 }
 
-th:first-child {
-  width: 200px;
-}
-
-th:nth-child(2) {
-  padding: 9px;
-  width: 200px;
+td:first-child, th:first-child {
+  text-align: left;
 }
 
 input {
-  width : 150px;
+  width : 100px;
   margin: 10px;
   padding: 6px;
   font-size: 15px;
+}
+
+input:nth-child(2) {
+  width: 40px;
 }
 
 td input {
   display: none;
 }
 
-tr.editMode input {
+tr.editMode input{
   display: block;
-  width: 40px;
+  width: 20px;
+  margin: 0 auto;
+}
+
+tr.editMode input.foodInput {
+  display: block;
+  width: 100px;
   margin: 0;
 }
 
 tr.editMode p.food, tr.editMode p.quantity {
   display: none;
 }
+
+table.fixed {table-layout:fixed; width:760px;}/*Setting the table width is important!*/
+
+table.fixed th {overflow:hidden;}/*Hide text outside the cell.*/
+table.fixed th:nth-of-type(1) {width:100px;}/*Setting the width of column 1.*/
+table.fixed th:nth-of-type(2) {width:60px;}/*Setting the width of column 2.*/
+table.fixed th:nth-of-type(3) {width:60px;}/*Setting the width of column 3.*/
+table.fixed th:nth-of-type(4) {width:60px;}/*Setting the width of column 4.*/
+table.fixed th:nth-of-type(5) {width:60px;}/*Setting the width of column 5.*/
+table.fixed th:nth-of-type(6) {width:60px;}/*Setting the width of column 6.*/
+table.fixed th:nth-of-type(7) {width:60px;}/*Setting the width of column 7.*/
+table.fixed th:nth-of-type(8) {width:140px;}/*Setting the width of column 8.*/
+
+
+
