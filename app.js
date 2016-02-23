@@ -9,10 +9,7 @@ var swagButton = document.getElementsByTagName("button")[1];
 var foodTable = document.getElementById("food-table");
 
 //An array that contains food objects that contain nutritional info
-var recipeArr = [];
-
-//An array to store the sum of the values in each column
-var totalArr = [];
+var recipeArray = [];
 
 //Get nutrion data from the Nutronix API
 function addFood(){
@@ -42,6 +39,7 @@ function Ingredient(food, cups, calories, protein, fat, sugar, fiber) {
 //Create an add row function that builds up a table row by appending data cells 
 //with each column value
 var createRow = function (xhr) {
+  var recipeArray = [];
   var foodObject = {};
   var data = JSON.parse(xhr.responseText);
 
@@ -132,9 +130,9 @@ var createRow = function (xhr) {
   var theIngredient = new Ingredient(foodName, numberOfCups, numberOfCalories, 
     numberOfProtein, numberOfFat, numberOfSugar, numberOfFiber);
 
-  recipeArr.push(theIngredient);
+  addQuantity(theIngredient);
+
   foodInput.value = "";
-  addQuantity();
 }
 
 addButton.addEventListener("click", function(){
@@ -147,38 +145,72 @@ addButton.addEventListener("click", function(){
 var editRecipe = function() {
   var editCell = this.parentNode;
   var recipeItem = editCell.parentNode;
-  var previousQuantity = recipeItem.querySelector("p.quantity").innerHTML;
   var editInput = recipeItem.querySelectorAll("input[type=text]")[0];
   var editQuantity = recipeItem.querySelectorAll("input[type=text]")[1];
-  var text = recipeItem.querySelectorAll("p")[0];
-  var quantity = recipeItem.querySelectorAll("p")[1];
-  var calories = recipeItem.querySelectorAll("p")[2];
-  var protein = recipeItem.querySelectorAll("p")[3];
-  var fat = recipeItem.querySelectorAll("p")[4];
-  var sugar = recipeItem.querySelectorAll("p")[5];
-  var fiber = recipeItem.querySelectorAll("p")[6];
+  var textElement = recipeItem.querySelector("p.food");
+
+  var quantityElement = recipeItem.querySelector("p.quantity");
+  var previousQuantity = quantityElement.innerHTML;
+
+  var caloriesElement = recipeItem.querySelector("p.calories");
+  var previousCalories = caloriesElement.innerHTML;
+
+  var proteinElement = recipeItem.querySelector("p.protein");
+  var previousProtein = proteinElement.innerHTML;
+
+  var fatElement = recipeItem.querySelector("p.fat");
+  var previousFat = fatElement.innerHTML;
+
+  var sugarElement = recipeItem.querySelector("p.sugar");
+  var previousSugar = sugarElement.innerHTML;
+
+  var fiberElement = recipeItem.querySelector("p.fiber");
+  var previousFiber = fiberElement.innerHTML;
+
   var containsClass = recipeItem.classList.contains("editMode");
   var editButton = recipeItem.querySelector("button.edit");
-
 
 //Swaps the p value with the input value if you click edit
 //Clicking edit again to switch out of editmode swaps edit input value with p value
   if (containsClass) {
-    text.innerText = editInput.value;
-    quantity.innerText = editQuantity.value;
-    calories.innerText = (calories.innerText/previousQuantity) * quantity.innerText;
-    protein.innerText = (protein.innerText/previousQuantity) * quantity.innerText; 
-    fat.innerText = (fat.innerText/previousQuantity) * quantity.innerText;
-    sugar.innerText = (sugar.innerText/previousQuantity) * quantity.innerText;
-    fiber.innerText = (fiber.innerText/previousQuantity) * quantity.innerText;
+
+    textElement.innerText = editInput.value;
+    var newtext = textElement.innerText;
+
+    quantityElement.innerText = editQuantity.value;
+    var newquantity = quantityElement.innerText - previousQuantity;
+
+    caloriesElement.innerText = (caloriesElement.innerText/previousQuantity) * quantityElement.innerText;
+    var newcalories = caloriesElement.innerText - previousCalories;
+
+    proteinElement.innerText = (proteinElement.innerText/previousQuantity) * quantityElement.innerText; 
+    var newprotein = proteinElement.innerText - previousProtein;
+
+    fatElement.innerText = (fatElement.innerText/previousQuantity) * quantityElement.innerText;
+    var newfat = fatElement.innerText - previousFat; 
+
+    sugarElement.innerText = (sugarElement.innerText/previousQuantity) * quantityElement.innerText;
+    var newsugar = sugarElement.innerText - previousSugar;
+
+    fiberElement.innerText = (fiberElement.innerText/previousQuantity) * quantityElement.innerText;
+    var newfiber = fiberElement.innerText - previousFiber;
+
     editButton.innerText = "Edit";
+
+    var theIngredient = new Ingredient(newtext, newquantity, newcalories, newprotein, newfat, newsugar, newfiber);
+
+    addQuantity(theIngredient);
+
   } else {
-    editInput.value = text.innerText;
-    editQuantity.value = quantity.innerText;
+
+    editInput.value = textElement.innerText;
+    editQuantity.value = quantityElement.innerText;
     editButton.innerText = "Save";
+    
   }
   recipeItem.classList.toggle('editMode');
-  addQuantity();
+
+
 }
 
 //Create delete function to select the parent row node of the button, assign to a variable 
@@ -191,55 +223,70 @@ var deleteRecipe = function() {
 }
 
 //Create an add function that sums the colums and displays them on the bottom row
-var addQuantity = function() {
+var addQuantity = function(foodObject) {
   var title = "Total"
-  var totalQuantity = 0;
-  var totalCalories = 0;
-  var totalProtein = 0;
-  var totalFat = 0;
-  var totalSugar = 0;
-  var totalFiber = 0;
-  
-  //Create arrays that contain all of the table data column cells
-  var quantities = document.getElementsByClassName("quantity");
-  var calories = document.getElementsByClassName("calories");
-  var protein = document.getElementsByClassName("protein");
-  var fat = document.getElementsByClassName("fat");
-  var sugar = document.getElementsByClassName("sugar");
-  var fiber = document.getElementsByClassName("fiber");
+  var quantity = 0;
+  var cals = 0;
+  var protein = 0;
+  var fat = 0;
+  var sugar = 0;
+  var fiber = 0;
+  var totalArr = [];
 
-  //Go through each table row and add the nutrient values in each column to their respective totals
-  for (var i = 0; i < quantities.length; i++) {
-    totalQuantity += parseInt(quantities[i].innerText);
-    totalCalories += parseInt(calories[i].innerText);
-    totalProtein += parseInt(protein[i].innerText);
-    totalFat += parseInt(fat[i].innerText);
-    totalSugar += parseInt(sugar[i].innerText);
-    totalFiber += parseInt(fiber[i].innerText);
-  }
+  recipeArray.push(foodObject);
 
-  //Create a new object with the total values of each nutrient column
-  var theTotal = new Ingredient(title, totalQuantity, totalCalories, totalProtein, totalFat, totalSugar, totalFiber);
+  quantity = Math.round(total(recipeArray.map(function(item) {
+    return item.cups;
+  })));
 
-  totalArr = [theTotal];
+  cals = Math.round(total(recipeArray.map(function(item) {
+    return item.calories;
+  })));
+
+  protein = Math.round(total(recipeArray.map(function(item) {
+    return item.protein;
+  })));
+
+  fat = Math.round(total(recipeArray.map(function(item) {
+    return item.fat;
+  })));
+
+  sugar = Math.round(total(recipeArray.map(function(item) {
+    return item.sugar;
+  })));
+
+  fiber = Math.round(total(recipeArray.map(function(item) {
+    return item.fiber;
+  })));
 
   //Add the totals to the footer table row
-  document.getElementById("tQty").innerText = totalQuantity;
-  document.getElementById("tCals").innerText = totalCalories;
-  document.getElementById("tPro").innerText = totalProtein;
-  document.getElementById("tFat").innerText = totalFat;
-  document.getElementById("tSug").innerText = totalSugar;
-  document.getElementById("tFib").innerText = totalFiber;
+  document.getElementById("tQty").innerText = quantity;
+  document.getElementById("tCals").innerText = cals;
+  document.getElementById("tPro").innerText = protein;
+  document.getElementById("tFat").innerText = fat;
+  document.getElementById("tSug").innerText = sugar;
+  document.getElementById("tFib").innerText = fiber;
 
 }
 
 swagButton.addEventListener('click', function() {
-  var nutriArray = recipeArr.map(healthAnalysis);
-  var diet = document.getElementById("diet").value;
-  display(nutriArray, diet);
-  console.log(nutriArray);
-  colorChanger(diet);
+  // var nutriArray = recipeArr.map(healthAnalysis);
+  // var diet = document.getElementById("diet").value;
+  // var highFiber = recipeArr.filter(fiberFilter).map(healthAnalysis);
+  // display(nutriArray, diet);
+  // colorChanger(diet);
+  // average(recipeArr);
+
 });
+
+var total = function(array) {
+  function plus(a, b) { return a + b; }
+  return array.reduce(plus);
+}
+
+var mapper = function(array, prop) {
+  return array[prop];
+}
 
 var display = function(r, diet) {
   // console.log(document.getElementById("analysis"))
@@ -258,6 +305,7 @@ var display = function(r, diet) {
   }
 }
 
+
 var healthAnalysis = function(current, index, array) {
   var len = recipeArr.length;
   var nutriString = "";
@@ -265,7 +313,7 @@ var healthAnalysis = function(current, index, array) {
   nutriString += "The " + current.food + " is ";
     for (var i = 0; i < 4; i++) {
     if (macros[i] === "protein" && current.protein > 5) {
-      nutriString += "high protein";
+      nutriString += "high protein ";
     } else if (macros[i] === "fat" && current.fat < 2) {
       nutriString += "low fat ";
     } else if (macros[i] === "sugar" && current.sugar < 5) {
@@ -306,7 +354,7 @@ var colorChanger = function(diet){
     for (var x = 0; x < fatCell.length; x++) {
       //If fat is high then make the cell green 
       //Don't make cell red if not high fat since it might be a veggie
-      if (fatCell[x].innerHTML > 2) {
+      if (fatCell[x].innerHTML > 3) {
         fatCell[x].parentNode.style.backgroundColor = "green";
       }
     }
