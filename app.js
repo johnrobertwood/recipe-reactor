@@ -147,6 +147,7 @@ addButton.addEventListener("click", function(){
 var editRecipe = function() {
   var editCell = this.parentNode;
   var recipeItem = editCell.parentNode;
+  var previousQuantity = recipeItem.querySelector("p.quantity").innerHTML;
   var editInput = recipeItem.querySelectorAll("input[type=text]")[0];
   var editQuantity = recipeItem.querySelectorAll("input[type=text]")[1];
   var text = recipeItem.querySelectorAll("p")[0];
@@ -159,16 +160,17 @@ var editRecipe = function() {
   var containsClass = recipeItem.classList.contains("editMode");
   var editButton = recipeItem.querySelector("button.edit");
 
+
 //Swaps the p value with the input value if you click edit
 //Clicking edit again to switch out of editmode swaps edit input value with p value
   if (containsClass) {
     text.innerText = editInput.value;
     quantity.innerText = editQuantity.value;
-    calories.innerText *= quantity.innerText;
-    protein.innerText *= quantity.innerText; 
-    fat.innerText *= quantity.innerText;
-    sugar.innerText *= quantity.innerText;
-    fiber.innerText *= quantity.innerText;
+    calories.innerText = (calories.innerText/previousQuantity) * quantity.innerText;
+    protein.innerText = (protein.innerText/previousQuantity) * quantity.innerText; 
+    fat.innerText = (fat.innerText/previousQuantity) * quantity.innerText;
+    sugar.innerText = (sugar.innerText/previousQuantity) * quantity.innerText;
+    fiber.innerText = (fiber.innerText/previousQuantity) * quantity.innerText;
     editButton.innerText = "Edit";
   } else {
     editInput.value = text.innerText;
@@ -232,58 +234,86 @@ var addQuantity = function() {
 }
 
 swagButton.addEventListener('click', function() {
-
   var nutriArray = recipeArr.map(healthAnalysis);
-  display(nutriArray);
-  colorChanger(recipeArr);
+  var diet = document.getElementById("diet").value;
+  display(nutriArray, diet);
+  console.log(nutriArray);
+  colorChanger(diet);
 });
 
-var display = function(r) {
+var display = function(r, diet) {
   // console.log(document.getElementById("analysis"))
   var messageText;
+  var dietCaps = diet.slice(0,1).toUpperCase() + diet.slice(1);
+  document.getElementById("dietMessage").innerHTML = "The " + dietCaps + " breakdown";
+  var oldList = document.getElementById("analysis");
+  while (oldList.firstChild) {
+    oldList.removeChild(oldList.firstChild);
+  }
+
   for (var i = 0; i < r.length; i++){
     messageText = document.createElement("li");
-    messageText.innerText = r[i];
+    messageText.innerHTML = r[i];
     document.getElementById("analysis").appendChild(messageText);
-    console.log(r);
   }
 }
 
-
-var healthAnalysis = function(r) {
-  var rArr = [];
+var healthAnalysis = function(current, index, array) {
   var len = recipeArr.length;
-  var macros = macroNutrients(r);
+  var nutriString = "";
+  var macros = macroNutrients(current);
+  nutriString += "The " + current.food + " is ";
     for (var i = 0; i < 4; i++) {
-    if (macros[i] === "protein" && r.protein > 5) {
-      rArr.push("The " + r.food + " is high in " + macros[i]);
-
-    } else if (macros[i] === "fat" && r.fat < 2) {
-      rArr.push("The " + r.food + " is low in " + macros[i]);
-    } else if (macros[i] === "sugar" && r.sugar < 5) {
-      rArr.push("The " + r.food + " is low in " + macros[i]);
-    } else if (macros[i] === "fiber" && r.fiber > 2) {
-      rArr.push("The " + r.food + " is high in " + macros[i]);
-      // recipeItem.querySelector("p.fiber").style.backgroundColor = "green";
+    if (macros[i] === "protein" && current.protein > 5) {
+      nutriString += "high protein";
+    } else if (macros[i] === "fat" && current.fat < 2) {
+      nutriString += "low fat ";
+    } else if (macros[i] === "sugar" && current.sugar < 5) {
+      nutriString += "low sugar ";
+    } else if (macros[i] === "fiber" && current.fiber > 2) {
+      nutriString += "high fiber "
     }
   }
-  return rArr;
+    console.log(nutriString);
+  return nutriString;
 }
 
-var colorChanger = function(r) {
-  var fiberCell = document.querySelectorAll("p.fiber");
+var colorChanger = function(diet){
+  var proteinCell = document.querySelectorAll("p.protein")
   var fatCell = document.querySelectorAll("p.fat");
-  for (var i = 0; i < fiberCell.length; i++) {
-    if (fiberCell[i].innerHTML > 2) {
-      fiberCell[i].parentNode.style.backgroundColor = "green";
-    } else
-    {
-      fiberCell[i].parentNode.style.backgroundColor = "red";
+  var sugarCell = document.querySelectorAll("p.sugar");
+  var fiberCell = document.querySelectorAll("p.fiber");
+  if (diet === "vegan") {
+    for (var i = 0; i < fiberCell.length; i++) {
+      if (fiberCell[i].innerHTML > 2) {
+        fiberCell[i].parentNode.style.backgroundColor = "green";
+      }
+    }
+    for (var j = 0; j < fatCell.length; j++) {
+      if (fatCell[j].innerHTML < 2) {
+        fatCell[j].parentNode.style.backgroundColor = "green";
+      } else {
+        fatCell[j].parentNode.style.backgroundColor = "red";
+      }
     }
   }
-  for (var j = 0; j < fatCell.length; j++) {
-    if (fatCell[j].innerHTML < 2) {
-      fatCell[j].parentNode.style.backgroundColor = "green";
+  if (diet === "paleo") {
+    for (var k = 0; k < proteinCell.length; k++) {
+      if (proteinCell[k].innerHTML > 5) {
+        proteinCell[k].parentNode.style.backgroundColor = "green";
+      }
+    }
+    for (var x = 0; x < fatCell.length; x++) {
+      //If fat is high then make the cell green 
+      //Don't make cell red if not high fat since it might be a veggie
+      if (fatCell[x].innerHTML > 2) {
+        fatCell[x].parentNode.style.backgroundColor = "green";
+      }
+    }
+    for (var y = 0; y < sugarCell.length; y++) {
+      if (sugarCell[y].innerHTML > 5) {
+        sugarCell[y].parentNode.style.backgroundColor = "red";
+      }
     }
   }
 }
