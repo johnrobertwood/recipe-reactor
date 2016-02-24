@@ -218,8 +218,16 @@ var editRecipe = function() {
 var deleteRecipe = function() {
   var buttonCell = this.parentNode;
   var buttonRow = buttonCell.parentNode;
+  var foodName = buttonRow.querySelector("p.food").innerHTML;
   var tbody = buttonRow.parentNode;
   tbody.removeChild(buttonRow);
+
+  recipeArray = recipeArray.filter(function(el) {
+    return el.food !== foodName;
+  });
+
+  addQuantity();
+
 }
 
 //Create an add function that sums the colums and displays them on the bottom row
@@ -231,9 +239,10 @@ var addQuantity = function(foodObject) {
   var fat = 0;
   var sugar = 0;
   var fiber = 0;
-  var totalArr = [];
 
-  recipeArray.push(foodObject);
+  if (foodObject) {
+    recipeArray.push(foodObject);
+  }
 
   quantity = Math.round(total(recipeArray.map(function(item) {
     return item.cups;
@@ -270,18 +279,16 @@ var addQuantity = function(foodObject) {
 }
 
 swagButton.addEventListener('click', function() {
-  // var nutriArray = recipeArr.map(healthAnalysis);
-  // var diet = document.getElementById("diet").value;
-  // var highFiber = recipeArr.filter(fiberFilter).map(healthAnalysis);
-  // display(nutriArray, diet);
-  // colorChanger(diet);
-  // average(recipeArr);
+  var nutriArray = recipeArray.map(healthAnalysis);
+  var diet = document.getElementById("diet").value;
+  display(nutriArray, diet);
+  colorChanger(diet);
 
 });
 
 var total = function(array) {
   function plus(a, b) { return a + b; }
-  return array.reduce(plus);
+  return array.reduce(plus, 0);
 }
 
 var mapper = function(array, prop) {
@@ -307,7 +314,7 @@ var display = function(r, diet) {
 
 
 var healthAnalysis = function(current, index, array) {
-  var len = recipeArr.length;
+  var len = recipeArray.length;
   var nutriString = "";
   var macros = macroNutrients(current);
   nutriString += "The " + current.food + " is ";
