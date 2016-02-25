@@ -1,5 +1,5 @@
 //Get the food and quantity inputs and assign them to variables
-var foodInput = document.getElementById("new-food");
+var newFoodInput = document.getElementById("new-food");
 var qtyInput = document.getElementById("new-quantity");
 //Assign the button to a variable
 var addButton = document.getElementsByTagName("button")[0];
@@ -19,7 +19,7 @@ function addFood(){
       createRow(xhr);
     }
   };
-  xhr.open('GET', 'https://api.nutritionix.com/v1_1/search/'+foodInput.value+
+  xhr.open('GET', 'https://api.nutritionix.com/v1_1/search/'+newFoodInput.value+
     '?fields=item_name%2Citem_id%2Cbrand_name%2Cnf_calories%2Cnf_total_fat%2C'+
     '%2Cnf_calories%2Cnf_protein%2Cnf_sugars%2Cnf_dietary_fiber'+
     '&appId=a5f3fad2&appKey=852bc683dfc97b299e0b1e1d6f9be7f5');
@@ -46,6 +46,10 @@ var createRow = function (xhr) {
   var recipeItem = document.createElement("tr");
 
   var foodName = data.hits[0].fields.item_name.split(' ')[0];
+  foodName = foodName.replace(/,/g, '');
+  if (foodName.lastIndexOf('s') === foodName.length - 1){
+    foodName = foodName.slice(0, -1);
+  }
   var foodDataCell = document.createElement("td");
   var foodText = document.createElement("p");
   var foodInput = document.createElement("input");
@@ -62,49 +66,49 @@ var createRow = function (xhr) {
   var cupsText = document.createElement("p");
   var cupsInput = document.createElement("input");
   cupsText.className = "quantity";
-  cupsText.innerText = Math.round(numberOfCups)*qtyInput.value;
+  cupsText.innerText = Math.round(numberOfCups);
   cupsInput.type = "text";
   cupsDataCell.appendChild(cupsText);
   cupsDataCell.appendChild(cupsInput);
   recipeItem.appendChild(cupsDataCell);
 
-  var numberOfCalories = data.hits[0].fields.nf_calories;
+  var numberOfCalories = data.hits[0].fields.nf_calories * qtyInput.value;;
   var caloriesDataCell = document.createElement("td");
   var caloriesText = document.createElement("p");
   caloriesText.className = "calories";
-  caloriesText.innerText = Math.round(numberOfCalories)*qtyInput.value;
+  caloriesText.innerText = Math.round(numberOfCalories)
   caloriesDataCell.appendChild(caloriesText);
   recipeItem.appendChild(caloriesDataCell);
 
-  var numberOfProtein = data.hits[0].fields.nf_protein;
+  var numberOfProtein = data.hits[0].fields.nf_protein * qtyInput.value;
   var proteinDataCell = document.createElement("td");
   var proteinText = document.createElement("p");
   proteinText.className = "protein";
-  proteinText.innerText = Math.round(numberOfProtein)*qtyInput.value;
+  proteinText.innerText = Math.round(numberOfProtein);
   proteinDataCell.appendChild(proteinText);
   recipeItem.appendChild(proteinDataCell);
 
-  var numberOfFat = data.hits[0].fields.nf_total_fat;
+  var numberOfFat = data.hits[0].fields.nf_total_fat * qtyInput.value;
   var fatDataCell = document.createElement("td");
   var fatText = document.createElement("p");
   fatText.className = "fat";
-  fatText.innerText = Math.round(numberOfFat)*qtyInput.value;
+  fatText.innerText = Math.round(numberOfFat);
   fatDataCell.appendChild(fatText);
   recipeItem.appendChild(fatDataCell);
 
-  var numberOfSugar = data.hits[0].fields.nf_sugars;
+  var numberOfSugar = data.hits[0].fields.nf_sugars * qtyInput.value;
   var sugarDataCell= document.createElement("td");
   var sugarText = document.createElement("p");
   sugarText.className = "sugar";
-  sugarText.innerText = Math.round(numberOfSugar)*qtyInput.value;
+  sugarText.innerText = Math.round(numberOfSugar);
   sugarDataCell.appendChild(sugarText);
   recipeItem.appendChild(sugarDataCell);
 
-  var numberOfFiber = data.hits[0].fields.nf_dietary_fiber;
+  var numberOfFiber = data.hits[0].fields.nf_dietary_fiber * qtyInput.value;
   var fiberDataCell = document.createElement("td");
   var fiberText = document.createElement("p");
   fiberText.className = "fiber";
-  fiberText.innerText = Math.round(numberOfFiber)*qtyInput.value;
+  fiberText.innerText = Math.round(numberOfFiber);
   fiberDataCell.appendChild(fiberText);
   recipeItem.appendChild(fiberDataCell);
 
@@ -132,11 +136,12 @@ var createRow = function (xhr) {
 
   addQuantity(theIngredient);
 
-  foodInput.value = "";
+  newFoodInput.value = "";
+  qtyInput.value = "";
 }
 
 addButton.addEventListener("click", function(){
-  if (foodInput.value !== ""){
+  if (newFoodInput.value !== ""){
     addFood();
   }
 });
@@ -178,22 +183,22 @@ var editRecipe = function() {
     var newtext = textElement.innerText;
 
     quantityElement.innerText = editQuantity.value;
-    var newquantity = quantityElement.innerText - previousQuantity;
+    var newquantity = Math.round(quantityElement.innerText - previousQuantity);
 
     caloriesElement.innerText = (caloriesElement.innerText/previousQuantity) * quantityElement.innerText;
-    var newcalories = caloriesElement.innerText - previousCalories;
+    var newcalories = Math.round(caloriesElement.innerText - previousCalories);
 
     proteinElement.innerText = (proteinElement.innerText/previousQuantity) * quantityElement.innerText; 
-    var newprotein = proteinElement.innerText - previousProtein;
+    var newprotein = Math.round(proteinElement.innerText - previousProtein);
 
     fatElement.innerText = (fatElement.innerText/previousQuantity) * quantityElement.innerText;
-    var newfat = fatElement.innerText - previousFat; 
+    var newfat = Math.round(fatElement.innerText - previousFat); 
 
     sugarElement.innerText = (sugarElement.innerText/previousQuantity) * quantityElement.innerText;
-    var newsugar = sugarElement.innerText - previousSugar;
+    var newsugar = Math.round(sugarElement.innerText - previousSugar);
 
     fiberElement.innerText = (fiberElement.innerText/previousQuantity) * quantityElement.innerText;
-    var newfiber = fiberElement.innerText - previousFiber;
+    var newfiber = Math.round(fiberElement.innerText - previousFiber);
 
     editButton.innerText = "Edit";
 
@@ -231,7 +236,7 @@ var deleteRecipe = function() {
 }
 
 //Create an add function that sums the colums and displays them on the bottom row
-var addQuantity = function(foodObject) {
+var addQuantity = function(foodObject, qty) {
   var title = "Total"
   var quantity = 0;
   var cals = 0;
@@ -280,11 +285,11 @@ var addQuantity = function(foodObject) {
 
 swagButton.addEventListener('click', function() {
   var nutriArray = recipeArray.map(healthAnalysis);
-  var diet = document.getElementById("diet").value;
-  display(nutriArray, diet);
-  colorChanger(diet);
+  display(nutriArray);
+  colorChanger();
 
 });
+
 
 var total = function(array) {
   function plus(a, b) { return a + b; }
@@ -298,8 +303,6 @@ var mapper = function(array, prop) {
 var display = function(r, diet) {
   // console.log(document.getElementById("analysis"))
   var messageText;
-  var dietCaps = diet.slice(0,1).toUpperCase() + diet.slice(1);
-  document.getElementById("dietMessage").innerHTML = "The " + dietCaps + " breakdown";
   var oldList = document.getElementById("analysis");
   while (oldList.firstChild) {
     oldList.removeChild(oldList.firstChild);
@@ -319,17 +322,12 @@ var healthAnalysis = function(current, index, array) {
   var macros = macroNutrients(current);
   nutriString += "The " + current.food + " is ";
     for (var i = 0; i < 4; i++) {
-    if (macros[i] === "protein" && current.protein > 5) {
-      nutriString += "high protein ";
-    } else if (macros[i] === "fat" && current.fat < 2) {
+    if (macros[i] === "fat" && current.fat < 2) {
       nutriString += "low fat ";
-    } else if (macros[i] === "sugar" && current.sugar < 5) {
-      nutriString += "low sugar ";
     } else if (macros[i] === "fiber" && current.fiber > 2) {
       nutriString += "high fiber "
     }
   }
-    console.log(nutriString);
   return nutriString;
 }
 
@@ -338,40 +336,20 @@ var colorChanger = function(diet){
   var fatCell = document.querySelectorAll("p.fat");
   var sugarCell = document.querySelectorAll("p.sugar");
   var fiberCell = document.querySelectorAll("p.fiber");
-  if (diet === "vegan") {
-    for (var i = 0; i < fiberCell.length; i++) {
-      if (fiberCell[i].innerHTML > 2) {
-        fiberCell[i].parentNode.style.backgroundColor = "green";
-      }
-    }
-    for (var j = 0; j < fatCell.length; j++) {
-      if (fatCell[j].innerHTML < 2) {
-        fatCell[j].parentNode.style.backgroundColor = "green";
-      } else {
-        fatCell[j].parentNode.style.backgroundColor = "red";
-      }
+  for (var i = 0; i < fiberCell.length; i++) {
+    if (fiberCell[i].innerHTML >= 2) {
+      fiberCell[i].parentNode.style.backgroundColor = "green";
     }
   }
-  if (diet === "paleo") {
-    for (var k = 0; k < proteinCell.length; k++) {
-      if (proteinCell[k].innerHTML > 5) {
-        proteinCell[k].parentNode.style.backgroundColor = "green";
-      }
-    }
-    for (var x = 0; x < fatCell.length; x++) {
-      //If fat is high then make the cell green 
-      //Don't make cell red if not high fat since it might be a veggie
-      if (fatCell[x].innerHTML > 3) {
-        fatCell[x].parentNode.style.backgroundColor = "green";
-      }
-    }
-    for (var y = 0; y < sugarCell.length; y++) {
-      if (sugarCell[y].innerHTML > 5) {
-        sugarCell[y].parentNode.style.backgroundColor = "red";
-      }
+  for (var j = 0; j < fatCell.length; j++) {
+    if (fatCell[j].innerHTML < 2) {
+      fatCell[j].parentNode.style.backgroundColor = "green";
+    } else {
+      fatCell[j].parentNode.style.backgroundColor = "red";
     }
   }
 }
+
 var macroNutrients = function(r) {
   var macroNames = [];
   for (var i = 3; i < 7; i++) {

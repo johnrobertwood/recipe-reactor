@@ -10,8 +10,8 @@
   <div class="container">
   	<h1>Create a recipe</h1>
   	<div class="row">
-	    <input id="new-food" type="text" placeholder="Add food here" value="banana">
-	 		<input id="new-quantity" type="text" placeholder="Quantity in cups" value="1">
+	    <input id="new-food" type="text" placeholder="Add food here" value="">
+	 		<input id="new-quantity" type="text" placeholder="Cups" value="">
 	 		<button>Add</button>
 	 	</div>
 
@@ -42,48 +42,18 @@
 					</tr>
 				</tfoot>
 				<tbody id="food-table">
-	<!-- 				<tr>
-						<td><p class="food">Bread</p><input type="text"></td>
-						<td><p class="quantity">1</p><input type="text"></td>
-						<td><p class="calories">60</p></td>
-						<td><p class="protein">9</p></td>
-						<td><p class="fat">2</p></td>
-						<td><p class="sugar">6</p></td>
-						<td><p class="fiber">10</p></td>
-						<td><button class="edit">Edit</button></td>
-						<td><button class="delete">Delete</button></td>
-					</tr>					
-					<tr>
-						<td><p class="food">Avocado</p><input type="text"></td>
-						<td><p class="quantity">1</p><input type="text"></td>
-						<td><p class="calories">80</p></td>
-						<td><p class="protein">6</p></td>
-						<td><p class="fat">2</p></td>
-						<td><p class="sugar">7</p></td>
-						<td><p class="fiber">12</p></td>
-						<td><button class="edit">Edit</button></td>
-						<td><button class="delete">Delete</button></td>
-					</tr> -->
+	
 				</tbody>
 			</table>
 	 	</div>
 	 	<div>
-	 		<h3>Select your diet</h3>
-	 		<select id="diet">
-	 			<!--Anything is default and has no style effects -->
-	 			<option value="anything">Anything</option>
-	 			<!--Vegan is low protein, low fat, high fiber -->
-	 		  <option value="vegan">Vegan</option>
-	 		  <!--Paleo is high protein, high fat, low sugar -->  
-	 		  <option value="paleo">Paleo</option>
-	 		</select>
 	 		<button>Analyze</button>
 	 	</div>
 	</div>
   <div class="container">
   	<h4 id="dietMessage"></h4>
   	<ul id="analysis">
-  		<!-- <li>This recipe is high in fat</li> -->
+
   	</ul>
   </div>
   <script src="app.js"></script>
