@@ -11,6 +11,18 @@ var foodTable = document.getElementById('food-table');
 // An array of food objects containing nutritional info
 var recipeArray = [];
 
+addButton.addEventListener('click', function() {
+  if (newFoodInput.value !== '' && qtyInput.value !== '' && qtyInput.value > 0) {
+    addFood();
+  }
+});
+
+analyzeButton.addEventListener('click', function() {
+  var nutriArray = recipeArray.map(healthAnalysis);
+  displayMessage(nutriArray);
+  colorChanger();
+});
+
 // Get nutrion data from the Nutronix API with the user input in the query string
 function addFood() {
   var xhr = new XMLHttpRequest();
@@ -52,10 +64,9 @@ var createRow = function (xhr) {
   // Create and assign table cell elements for the nutrition API data 
   var foodDataCell = document.createElement('td');
   var foodText = document.createElement('p');
-  var foodInput = document.createElement('input');
   
   // Cups is user supplied and not returned from the API
-  var numberOfCups = parseInt(qtyInput.value);
+  var numberOfCups = parseFloat(qtyInput.value);
 
   // Create and assign table cell elements
   var cupsDataCell = document.createElement('td');
@@ -102,14 +113,11 @@ var createRow = function (xhr) {
   // Insert text into the p elements, assign class names and append the nodes
   foodText.className = 'food';
   foodText.innerHTML = foodName;
-  foodInput.type = 'text';
-  foodInput.className = 'foodInput';
   foodDataCell.appendChild(foodText);
-  foodDataCell.appendChild(foodInput);
   recipeItem.appendChild(foodDataCell);
   
   cupsText.className = 'quantity';
-  cupsText.innerHTML = Math.round(numberOfCups);
+  cupsText.innerHTML = numberOfCups;
   cupsInput.type = 'text';
   cupsDataCell.appendChild(cupsText);
   cupsDataCell.appendChild(cupsInput);
@@ -146,7 +154,7 @@ var createRow = function (xhr) {
   recipeItem.appendChild(fiberDataCell);
 
   editButton.className = 'edit';
-  editButton.innerHTML = 'Edit';
+  editButton.innerHTML = 'Edit Qty';
   editDataCell.appendChild(editButton);
   recipeItem.appendChild(editDataCell);
 
@@ -170,18 +178,15 @@ var createRow = function (xhr) {
   qtyInput.value = '';
 }
 
-addButton.addEventListener('click', function() {
-  if (newFoodInput.value !== '' && qtyInput.value !== '') {
-    addFood();
-  }
-});
-
-// Create an edit function that selects the parent node of the button
+/* The edit function switches into edit mode and allows the user to change 
+ / food name and quantity. When the user saves, the new values are displayed 
+ / and the new quantity is added to the recipe object
+*/ 
 var editRecipe = function() {
   var editCell = this.parentNode;
   var recipeItem = editCell.parentNode;
-  var editInput = recipeItem.querySelectorAll('input[type=text]')[0];
-  var editQuantity = recipeItem.querySelectorAll('input[type=text]')[1];
+  var editQuantity = recipeItem.querySelectorAll('input[type=text]')[0];
+
   var textElement = recipeItem.querySelector('p.food');
 
   var quantityElement = recipeItem.querySelector('p.quantity');
@@ -222,49 +227,50 @@ var editRecipe = function() {
  */
   if (containsClass) {
 
-    textElement.innerHTML = editInput.value;
     newText = textElement.innerHTML;
 
-    quantityElement.innerHTML = editQuantity.value;
-    newQuantity = Math.round(quantityElement.innerHTML - previousQuantity);
+    if (editQuantity.value > 0) {
+      quantityElement.innerHTML = editQuantity.value;
+    } else {
+      quantityElement.innerHTML = previousQuantity;
+    }
 
     // Recalculate and display the values with the new quantity
-    caloriesElement.innerHTML = Math.round((caloriesElement.innerHTML/previousQuantity) * quantityElement.innerHTML);
-    newCalories = Math.round(caloriesElement.innerHTML - previousCalories);
+    caloriesElement.innerHTML = ((caloriesElement.innerHTML/previousQuantity) * quantityElement.innerHTML).toFixed(0);
 
-    carbsElement.innerHTML = Math.round((carbsElement.innerHTML/previousQuantity) * quantityElement.innerHTML);
-    newCarbs = Math.round(carbsElement.innerHTML - previousCarbs);
+    carbsElement.innerHTML = ((carbsElement.innerHTML/previousQuantity) * quantityElement.innerHTML).toFixed(0);
 
-    proteinElement.innerHTML = Math.round((proteinElement.innerHTML/previousQuantity) * quantityElement.innerHTML); 
-    newProtein = Math.round(proteinElement.innerHTML - previousProtein);
+    proteinElement.innerHTML = ((proteinElement.innerHTML/previousQuantity) * quantityElement.innerHTML).toFixed(0); 
 
-    fatElement.innerHTML = Math.round((fatElement.innerHTML/previousQuantity) * quantityElement.innerHTML);
-    newFat = Math.round(fatElement.innerHTML - previousFat); 
+    fatElement.innerHTML = ((fatElement.innerHTML/previousQuantity) * quantityElement.innerHTML).toFixed(0);
 
-    sugarElement.innerHTML = Math.round((sugarElement.innerHTML/previousQuantity) * quantityElement.innerHTML);
-    newSugar = Math.round(sugarElement.innerHTML - previousSugar);
+    sugarElement.innerHTML = ((sugarElement.innerHTML/previousQuantity) * quantityElement.innerHTML).toFixed(0);
 
-    fiberElement.innerHTML = Math.round((fiberElement.innerHTML/previousQuantity) * quantityElement.innerHTML);
-    newFiber = Math.round(fiberElement.innerHTML - previousFiber);
+    fiberElement.innerHTML = ((fiberElement.innerHTML/previousQuantity) * quantityElement.innerHTML).toFixed(0);
 
-    editButton.innerHTML = 'Edit';
+    editButton.innerHTML = 'Edit Qty';
+    
+    var byName = {};
+    recipeArray.forEach(function(obj) {
+      byName[obj.food] = obj;
+    });
 
-    // Create a new object that contains the amount that was just added
-    theIngredient = new Ingredient(newText, newQuantity, newCalories, newCarbs, newProtein, 
-      newFat, newSugar, newFiber);
-
+    byName[newText].cups = parseFloat(quantityElement.innerHTML); 
+    byName[newText].calories = parseInt(caloriesElement.innerHTML);
+    byName[newText].carbs = parseInt(carbsElement.innerHTML);
+    byName[newText].protein = parseInt(proteinElement.innerHTML);
+    byName[newText].fat = parseInt(fatElement.innerHTML);
+    byName[newText].sugar = parseInt(sugarElement.innerHTML);
+    byName[newText].fiber = parseInt(fiberElement.innerHTML);
     // Recalculate and display the sum totals
-    addQuantity(theIngredient);
+    addQuantity();
 
   } else {
-
-    editInput.value = textElement.innerHTML;
     editQuantity.value = quantityElement.innerHTML;
-    editButton.innerHTML = 'Save';
-    
+    editButton.innerHTML = 'Save';  
   }
-  recipeItem.classList.toggle('editMode');
 
+  recipeItem.classList.toggle('editMode');
 }
 
 // The bindRecipeEvents function assigns click event handlers to the edit and delete functions
@@ -280,9 +286,9 @@ for (var i = 0; i < foodTable.children.length; i++) {
   bindRecipeEvents(foodTable.children[i]);
 }
 
-/* Create delete function to select the parent row node of the button, assign to a variable 
- * then move up to the next parent and then removes the child to delete the row
- */
+/* The delete function to select the parent node the removes 
+/  child to delete the row
+*/
 var deleteRecipe = function() {
   var buttonCell = this.parentNode;
   var buttonRow = buttonCell.parentNode;
@@ -309,12 +315,17 @@ var addQuantity = function(foodObject) {
   var fiber = 0;
 
   if (foodObject) {
+    //check recipeArray to see if the foodObject.food exists
+    var recipeObject = recipeArray.filter(function(element) {
+      return element.food === foodObject.food;
+    })
+
     recipeArray.push(foodObject);
   }
 
-  quantity = Math.round(total(recipeArray.map(function(item) {
+  quantity = total(recipeArray.map(function(item) {
     return item.cups;
-  })));
+  }));
 
   cals = Math.round(total(recipeArray.map(function(item) {
     return item.calories;
@@ -340,9 +351,9 @@ var addQuantity = function(foodObject) {
     return item.fiber;
   })));
 
-  var displayRow = function(str, id) {
+  var displayRow = function(num, id) {
     var outputDiv = document.getElementById(id);
-    outputDiv.innerHTML = str;
+    outputDiv.innerHTML = num;
   }
 
   // Add the totals to the footer table row
@@ -355,24 +366,6 @@ var addQuantity = function(foodObject) {
   displayRow(fiber, 'totalFiber');
 
 }
-
-analyzeButton.addEventListener('click', function() {
-  var uniqueArr = recipeArray;
-  uniqueArr.sort( function( a, b){ return a.food - b.food; } );
-
-  // Delete any duplicates that were added to array from edit quantity calls
-  for( var i=0; i<uniqueArr.length-1; i++ ) {
-    if ( uniqueArr[i].food == uniqueArr[i+1].food ) {
-      uniqueArr.splice(i, 1);
-    }
-  }
-  // remove the "undefined entries"
-  // uniqueArr = uniqueArr.filter( function( el ){ return (typeof el !== "undefined"); } );
-  var nutriArray = uniqueArr.map(healthAnalysis);
-  displayMessage(nutriArray);
-  colorChanger();
-});
-
 
 var total = function(array) {
   function plus(a, b) { 
@@ -400,11 +393,14 @@ var displayMessage = function(arr) {
   }
 }
 
+//Display messages according to nutrition rules
 var healthAnalysis = function(current, index, array) {
 
   var len = recipeArray.length;
   var nutriString = '';
   var macros = macroNutrients(current);
+  var uniqueMessage = [];
+  var item = '';
   nutriString += 'The ' + current.food + ' is ';
     for (var i = 0; i < 5; i++) {
       if (macros[i] === 'protein' && (current.protein / current.cups) < 2) {
@@ -433,6 +429,7 @@ var healthAnalysis = function(current, index, array) {
   return nutriString;
 }
 
+// Loop through table data elements and change background colors according to nutrition rules
 var colorChanger = function() {
   var quantityCell = document.querySelectorAll('p.quantity')
   var proteinCell = document.querySelectorAll('p.protein')
@@ -473,7 +470,7 @@ var colorChanger = function() {
   }
 
 }
-
+// Function to pull property names from array of objects
 var macroNutrients = function(r) {
   var macroNames = [];
   var prop;

@@ -62,13 +62,8 @@ tr.editMode input{
   margin: 0 auto;
 }
 
-tr.editMode input.foodInput {
-  display: block;
-  width: 100px;
-  margin: 0;
-}
 
-tr.editMode p.food, tr.editMode p.quantity {
+tr.editMode p.quantity {
   display: none;
 }
 
