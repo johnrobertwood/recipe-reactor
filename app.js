@@ -357,7 +357,18 @@ var addQuantity = function(foodObject) {
 }
 
 analyzeButton.addEventListener('click', function() {
-  var nutriArray = recipeArray.map(healthAnalysis);
+  var uniqueArr = recipeArray;
+  uniqueArr.sort( function( a, b){ return a.food - b.food; } );
+
+  // Delete any duplicates that were added to array from edit quantity calls
+  for( var i=0; i<uniqueArr.length-1; i++ ) {
+    if ( uniqueArr[i].food == uniqueArr[i+1].food ) {
+      uniqueArr.splice(i, 1);
+    }
+  }
+  // remove the "undefined entries"
+  // uniqueArr = uniqueArr.filter( function( el ){ return (typeof el !== "undefined"); } );
+  var nutriArray = uniqueArr.map(healthAnalysis);
   displayMessage(nutriArray);
   colorChanger();
 });
@@ -390,19 +401,30 @@ var displayMessage = function(arr) {
 }
 
 var healthAnalysis = function(current, index, array) {
+
   var len = recipeArray.length;
   var nutriString = '';
   var macros = macroNutrients(current);
   nutriString += 'The ' + current.food + ' is ';
     for (var i = 0; i < 5; i++) {
-      if (macros[i] === 'fat' && current.fat < 2) {
-        nutriString += ' low fat,';
-      } else if (macros[i] === 'fat' && current.fat >= 2) {
-        nutriString += ' high fat, ';
+      if (macros[i] === 'protein' && (current.protein / current.cups) < 2) {
+        nutriString += ' low protein,';
+      } else if (macros[i] === 'protein' && (current.protein / current.cups) >= 2) {
+        nutriString += ' high protein,';
       } 
-      if (macros[i] === 'fiber' && current.fiber < 2) {
-        nutriString +- ' low fiber,';
-      } else if (macros[i] === 'fiber' && current.fiber >= 2) {
+      if (macros[i] === 'fat' && (current.fat / current.cups) < 2) {
+        nutriString += ' low fat,';
+      } else if (macros[i] === 'fat' && (current.fat / current.cups) >= 2) {
+        nutriString += ' high fat,';
+      } 
+      if (macros[i] === 'sugar' && (current.sugar / current.cups) < 2) {
+        nutriString += ' low sugar,';
+      } else if (macros[i] === 'sugar' && (current.sugar / current.cups) >= 2) {
+        nutriString += ' high sugar,';
+      } 
+      if (macros[i] === 'fiber' && (current.fiber / current.cups) < 2) {
+        nutriString += ' low fiber,';
+      } else if (macros[i] === 'fiber' && (current.fiber / current.cups) >= 2) {
         nutriString += ' high fiber,'; 
       }
     }
@@ -412,24 +434,44 @@ var healthAnalysis = function(current, index, array) {
 }
 
 var colorChanger = function() {
+  var quantityCell = document.querySelectorAll('p.quantity')
   var proteinCell = document.querySelectorAll('p.protein')
   var fatCell = document.querySelectorAll('p.fat');
   var sugarCell = document.querySelectorAll('p.sugar');
   var fiberCell = document.querySelectorAll('p.fiber');
 
-  for (var i = 0; i < fiberCell.length; i++) {
-    if (fiberCell[i].innerHTML >= 2) {
-      fiberCell[i].parentNode.style.backgroundColor = 'green';
+  for (var i = 0; i < proteinCell.length; i++) {
+    if ((proteinCell[i].innerHTML / quantityCell[i].innerHTML) >= 2) {
+      proteinCell[i].parentNode.style.backgroundColor = 'green';
+    } else {
+      proteinCell[i].parentNode.style.backgroundColor = 'red';
     }
   }
 
   for (var j = 0; j < fatCell.length; j++) {
-    if (fatCell[j].innerHTML < 2) {
+    if ((fatCell[j].innerHTML / quantityCell[j].innerHTML) < 2) {
       fatCell[j].parentNode.style.backgroundColor = 'green';
     } else {
       fatCell[j].parentNode.style.backgroundColor = 'red';
     }
   }
+
+  for (var k = 0; k < sugarCell.length; k++) {
+    if ((sugarCell[k].innerHTML / quantityCell[k].innerHTML) < 2) {
+      sugarCell[k].parentNode.style.backgroundColor = 'green';
+    } else {
+      sugarCell[k].parentNode.style.backgroundColor = 'red';
+    }
+  }
+  
+  for (var l = 0; l < fiberCell.length; l++) {
+    if ((fiberCell[l].innerHTML / quantityCell[l].innerHTML) >= 2) {
+      fiberCell[l].parentNode.style.backgroundColor = 'green';
+    } else {
+      fiberCell[l].parentNode.style.backgroundColor = 'red';
+    }
+  }
+
 }
 
 var macroNutrients = function(r) {
