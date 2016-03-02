@@ -3,8 +3,10 @@ var newFoodInput = document.getElementById('new-food');
 var qtyInput = document.getElementById('new-quantity');
 // Assign the add button
 var addButton = document.getElementsByTagName('button')[0];
+// Assign the reset button
+var resetButton = document.getElementsByTagName('button')[1];
 // Assign the analyze button
-var analyzeButton = document.getElementsByTagName('button')[1];
+var analyzeButton = document.getElementsByTagName('button')[2];
 // Assign a parent element for the table we are going to create
 var foodTable = document.getElementById('food-table');
 
@@ -16,6 +18,21 @@ addButton.addEventListener('click', function() {
   if (newFoodInput.value !== '' && qtyInput.value !== '' && qtyInput.value > 0) {
     addFood();
   }
+});
+
+// Reset All button clears the recipe object array and removes all the 
+// food-table and analysis child nodes to reset the page
+resetButton.addEventListener('click', function() {
+  var foodTable = document.getElementById('food-table');
+  var foodChildren = foodTable.children;
+  console.log(foodChildren.length);
+  recipeArray = [];
+  for (var i = foodChildren.length - 1; i >= 0; i--){
+    foodTable.removeChild(foodChildren[i]);
+  }
+  nutriArray = recipeArray.map(healthAnalysis);
+  displayMessage(nutriArray);
+  addQuantity();
 });
 
 /*
@@ -224,7 +241,10 @@ var deleteRecipe = function() {
 
   nutriArray = recipeArray.map(healthAnalysis);
   addQuantity();
-  displayMessage(nutriArray);
+  // Check if we have already analyzed and if so update to remove the message
+  if (document.getElementById('analysis').childNodes[0].innerHTML) {
+    displayMessage(nutriArray);
+  }
 }
 
 // Create an add function that sums the colums and displays them on the bottom row
