@@ -1,12 +1,20 @@
 body {
   background: #fff;
   color: #333;
-  font-family: Lato, sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 .container {
   display: block;
   width: 800px;
   margin: 40px auto 0;
+}
+
+.healthy {
+  background-color: #33cc33;
+}
+
+.unhealthy {
+  background-color: #ff0000;
 }
 
 #footer {
@@ -19,6 +27,7 @@ button {
   font-size: 15px;
   width: 80px;
   cursor: pointer;
+  border-radius: 5px;
 }
 
 select {

@@ -367,9 +367,9 @@ var colorChanger = function() {
   for (var i = 0; i < goodArr.length; i++) {
     for (var j = 0; j < goodArr[i].length; j++) {
       if ((goodArr[i][j].innerHTML / cupsCell[j].innerHTML) >= 2) {
-        goodArr[i][j].parentNode.style.backgroundColor = 'green';
+        goodArr[i][j].parentNode.classList.add('healthy');
       } else {
-        goodArr[i][j].parentNode.style.backgroundColor = 'red';
+        goodArr[i][j].parentNode.classList.add('unhealthy');
       }
     }
   }
@@ -377,9 +377,9 @@ var colorChanger = function() {
   for (var i = 0; i < badArr.length; i++) {
     for (var j = 0; j < badArr[i].length; j++) {
       if ((badArr[i][j].innerHTML / cupsCell[j].innerHTML) >= 2) {
-        badArr[i][j].parentNode.style.backgroundColor = 'red';
+        badArr[i][j].parentNode.classList.add('unhealthy');
       } else {
-        badArr[i][j].parentNode.style.backgroundColor = 'green';
+        badArr[i][j].parentNode.classList.add('healthy');
       }
     }
   }
