@@ -4,11 +4,10 @@
   <meta charset="UTF-8">
   <title>Nutrition Info</title>
   <link rel="stylesheet" href="style.css" >
-  
 </head>
 <body>
   <div class="container">
-  	<h1>Create a recipe</h1>
+  	<h1>Create and Analyze a Recipe</h1>
   	<div class="row">
 	    <input id="new-food" type="text" placeholder="Add food here" value="">
 	 		<input id="new-quantity" type="text" placeholder="Cups" value="">
@@ -33,18 +32,17 @@
 				<tfoot>
 					<tr>
 						<th id="title">Total</th>
-						<th id="totalQuantity">-</th>
-						<th id="totalCalories">-</th>
-            <th id="totalCarbs">-</th>
-						<th id="totalProtein">-</th>
-						<th id="totalFat">-</th>
-						<th id="totalSugar">-</th>
-						<th id="totalFiber">-</th>
+						<th id="cups">-</th>
+						<th id="calories">-</th>
+            <th id="carbs">-</th>
+						<th id="protein">-</th>
+						<th id="fat">-</th>
+						<th id="sugar">-</th>
+						<th id="fiber">-</th>
 						<th colspan="2">-</th>
 					</tr>
 				</tfoot>
 				<tbody id="food-table">
-	
 				</tbody>
 			</table>
 	 	</div>
@@ -54,8 +52,12 @@
 	</div>
   <div class="container">
   	<div id="analysis">
-
   	</div>
+  </div>
+  <div class="container">
+    <div id="footer">
+      Powered by <a href="http://www.nutritionix.com/api">Nutritionix API</a></p>
+    </div>
   </div>
   <script src="app.js"></script>
 </body>

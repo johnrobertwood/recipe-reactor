@@ -6,8 +6,13 @@ body {
 .container {
   display: block;
   width: 800px;
-  margin: 20px auto 0;
+  margin: 40px auto 0;
 }
+
+#footer {
+  text-align: right;
+}
+
 button {
   background: none;
   color: #888;
@@ -62,13 +67,11 @@ tr.editMode input{
   margin: 0 auto;
 }
 
-
-tr.editMode p.quantity {
+tr.editMode p.cups {
   display: none;
 }
 
 table.fixed {table-layout:fixed; width:760px;}/*Setting the table width is important!*/
-
 table.fixed th {overflow:hidden;}/*Hide text outside the cell.*/
 table.fixed th:nth-of-type(1) {width:100px;}/*Setting the width of column 1.*/
 table.fixed th:nth-of-type(2) {width:60px;}/*Setting the width of column 2.*/
@@ -79,6 +82,3 @@ table.fixed th:nth-of-type(6) {width:60px;}/*Setting the width of column 6.*/
 table.fixed th:nth-of-type(7) {width:60px;}/*Setting the width of column 7.*/
 table.fixed th:nth-of-type(8) {width:60px;}/*Seeting the width of column 8.*/
 table.fixed th:nth-of-type(9) {width:140px;}/*Setting the width of column 9.*/
-
-
-
