@@ -7,3 +7,5 @@ Clicking the analyze button will evaluate the nutritional data, add color coding
 and create a message explaining the analysis.  
 
 To run the app locally, clone the repo, cd into the directory, install express by typing "npm install" in the terminal console and run the server with the command "node server.js"
+
+http://johnrobertwood.github.io/recipe-reactor/
