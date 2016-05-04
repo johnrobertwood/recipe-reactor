@@ -1,6 +1,5 @@
 # recipe-reactor
 Create and analyze a recipe using JavaScript and the Nutritionix API with The Recipe Reactor.
-This project was created to hone my JavaScript skills in preparation for Hack Reactor.
 To use the Recipe Reactor, simply enter a type of food and a quantity in cups.  The app will 
 query the Nutritionix API and return the first match and associated nutritional information.
 Clicking the analyze button will evaluate the nutritional data, add color coding to the table
