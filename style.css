@@ -1,7 +1,7 @@
 body {
-  background: #eafafa;
   color: #333;
   font-family: 'Montserrat', sans-serif;
+  padding-top: 5%;
 }
 .container {
   display: block;
@@ -23,7 +23,6 @@ body {
 
 button {
   background: none;
-  color: #888;
   font-size: 15px;
   width: 80px;
   cursor: pointer;
@@ -60,7 +59,6 @@ input {
   margin: 10px;
   padding: 6px;
   font-size: 15px;
-  background-color: #d3d3d3;
 }
 
 input:nth-child(2) {
